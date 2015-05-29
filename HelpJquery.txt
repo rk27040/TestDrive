@@ -1,0 +1,26 @@
+There is a bunch of special selectors you can make use of:
+
+^= is starts with
+
+$= is ends with    
+=  is exactly equal
+!= is not equal
+*= is contains
+Try:
+
+$.each($('[class^="akordeon-item"]'), function(key, value) {
+    console.log(key, value);
+});
+jsFiddle demo
+$.each documentation
+Alternative ways to iterate over the set:
+
+$('[class^="akordeon-item"]').each(function(key, value) {
+    console.log(key, value);
+});
+Or using a for loop:
+
+var slides = $('[class^="akordeon-item"]');
+for (var i = 0; i < slides.length; i++) {
+    console.log(slides[i]);
+}
