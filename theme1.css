@@ -1,0 +1,273 @@
+body
+{
+    background: url(bg12.jpg);
+}
+
+#cards
+{
+    padding: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -325px;
+    margin-left: -400px;
+    z-index: 0;
+}
+
+    #cards li
+    {
+        display: block;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 70px;
+        height: 70px;
+        z-index: 0;
+        margin: 0;
+    }
+
+.mainText
+{
+    height: 70px;
+    width: 70px;
+    display: table-cell;
+    font-size: 32px;
+    color: aqua;
+    background-color: darkred;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: black;
+    border-style: double;
+    border-width: 5px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.buttonStyle
+{
+    height: 40px;
+    width: 100px;
+    display: table-cell;
+    font-size: 24px;
+    color: white;
+    background-color: dimgray;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: maroon;
+    border-style: solid;
+    border-width: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.buttonStyle2
+{
+    height: 50px;
+    width: 140px;
+    display: table-cell;
+    font-size: 24px;
+    color: white;
+    background-color: dimgray;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: maroon;
+    border-style: solid;
+    border-width: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    cursor: hand;
+    text-decoration: none;
+}
+
+h4
+{
+    color: aqua;
+    padding-left: 10px;
+}
+
+.resultsText
+{
+    width: 220px;
+    height: 570px;
+    display: table-cell;
+    font-size: 32px;
+    color: aqua;
+    background-color: transparent;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: maroon;
+    border-style: double;
+    border-width: 5px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -o-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -khtml-border-radius: 30px;
+    border-radius: 30px;
+}
+
+.gameOff
+{
+    width: 50px;
+    height: 50px;
+    font-size: 32px;
+    color: aqua;
+    background-color: transparent;
+    font-family: Orbitron,cursive;
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    border-color: white;
+    border-style: double;
+    border-width: 5px;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+}
+
+    .gameOff:hover
+    {
+        background-color: forestgreen;
+    }
+
+.gameOn
+{
+    width: 50px;
+    height: 50px;
+    font-size: 32px;
+    color: aqua;
+    background-color: forestgreen;
+    font-family: Orbitron,cursive;
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    border-color: maroon;
+    border-style: double;
+    border-width: 5px;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+}
+
+.KenoCardDivpicksDiv
+{
+    height: 70px;
+    width: 70px;
+    display: table-cell;
+    font-size: 32px;
+    color: maroon;
+    background-color: silver;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: black;
+    border-width: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.KenoCardDivdrawDiv
+{
+    height: 70px;
+    width: 70px;
+    display: table-cell;
+    font-size: 32px;
+    color: white;
+    background-color: darkgreen;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: black;
+    border-width: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.KenoCardDivdefaultDiv
+{
+    height: 70px;
+    width: 70px;
+    display: table-cell;
+    font-size: 32px;
+    color: white;
+    background-color: silver;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: black;
+    border-width: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.KenoCardDivImageBorder
+{
+    height: 67px;
+    width: 67px;
+    display: table-cell;
+    font-size: 32px;
+    color: white;
+    background-color: maroon;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: darkgreen;
+    border-style: dotted;
+    border-width: 3px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.KenoCardDivdivEmpty
+{
+    height: 70px;
+    width: 600px;
+    display: table-cell;
+    font-size: 32px;
+    color: white;
+    background-color: silver;
+    font-family: Orbitron,cursive;
+    vertical-align: middle;
+    text-align: center;
+    border-color: black;
+    border-width: 2px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+}
