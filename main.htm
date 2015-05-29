@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DisplayTicket</title>
+    <meta http-equiv="imagetoolbar" content="no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+    <link href="styles.css" media="screen" rel="Stylesheet" type="text/css" />
+    <link href="theme1.css" media="screen" rel="Stylesheet" type="text/css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Orbitron:700' rel='stylesheet' type='text/css'>
+    <script src="scripty.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var ticketData;
+        var totalRecs = 0;
+        var currentRecNo = -1;
+        var currentGameNo = 0;
+        var gameStartingRecs = "0,7";
+              var selectedNumbersList;
+        var drawNumbersList;
+        var gameStartRecList = gameStartingRecs.split(",");
+        var currentRecObject;
+
+        ticketData = [{ "GameNumber": "78", "GameNumberForDisplay": null, "BallDrawing": "1,51,28,23,61,72,36,20,19,29,7,10,59,16,45,22,62,33,37,74", "NumberOfGames": 2, "BallLevels": "3?2?2?3?3?3?3?2?3?2?3?3?3?3?3?3?3?3?2?3?3?3?3?2?1?3?3?3?3?3?3?1?3?2?3?2?3?3?3?3?3?1?3?3?2?2?3?3?3?3?3?1?2?3?3?2?3?2?3?2?1?3?3?3?1?1?2?3?3?2?3?3?1?3?3?3?3?3?3?3", "BallsLevel1": "61", "BallsLevel2": "10,19,36,45", "BallsLevel3": "1,7,16,20,22,23,28,29,33,37,51,59,62,72,74", "SequenceNum": null, "NumbersPlayed": "10,", "NumOfNums": "1", "Price": 0.2500, "ValueThisGame": 0.7500, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.7500, "RecordNum": "0" }, { "GameNumber": "78", "GameNumberForDisplay": null, "BallDrawing": "1,51,28,23,61,72,36,20,19,29,7,10,59,16,45,22,62,33,37,74", "NumberOfGames": 2, "BallLevels": "3?2?2?3?3?3?3?2?3?2?3?3?3?3?3?3?3?3?2?3?3?3?3?2?1?3?3?3?3?3?3?1?3?2?3?2?3?3?3?3?3?1?3?3?2?2?3?3?3?3?3?1?2?3?3?2?3?2?3?2?1?3?3?3?1?1?2?3?3?2?3?3?1?3?3?3?3?3?3?3", "BallsLevel1": "61", "BallsLevel2": "10,19,36,45", "BallsLevel3": "1,7,16,20,22,23,28,29,33,37,51,59,62,72,74", "SequenceNum": null, "NumbersPlayed": "36,27,", "NumOfNums": "2", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.7500, "RecordNum": "1" }, { "GameNumber": "78", "GameNumberForDisplay": null, "BallDrawing": "1,51,28,23,61,72,36,20,19,29,7,10,59,16,45,22,62,33,37,74", "NumberOfGames": 2, "BallLevels": "3?2?2?3?3?3?3?2?3?2?3?3?3?3?3?3?3?3?2?3?3?3?3?2?1?3?3?3?3?3?3?1?3?2?3?2?3?3?3?3?3?1?3?3?2?2?3?3?3?3?3?1?2?3?3?2?3?2?3?2?1?3?3?3?1?1?2?3?3?2?3?3?1?3?3?3?3?3?3?3", "BallsLevel1": "61", "BallsLevel2": "10,19,36,45", "BallsLevel3": "1,7,16,20,22,23,28,29,33,37,51,59,62,72,74", "SequenceNum": null, "NumbersPlayed": "43,42,31,", "NumOfNums": "3", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.7500, "RecordNum": "2" }, { "GameNumber": "78", "GameNumberForDisplay": null, "BallDrawing": "1,51,28,23,61,72,36,20,19,29,7,10,59,16,45,22,62,33,37,74", "NumberOfGames": 2, "BallLevels": "3?2?2?3?3?3?3?2?3?2?3?3?3?3?3?3?3?3?2?3?3?3?3?2?1?3?3?3?3?3?3?1?3?2?3?2?3?3?3?3?3?1?3?3?2?2?3?3?3?3?3?1?2?3?3?2?3?2?3?2?1?3?3?3?1?1?2?3?3?2?3?3?1?3?3?3?3?3?3?3", "BallsLevel1": "61", "BallsLevel2": "10,19,36,45", "BallsLevel3": "1,7,16,20,22,23,28,29,33,37,51,59,62,72,74", "SequenceNum": null, "NumbersPlayed": "43,42,31,10,", "NumOfNums": "4", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.7500, "RecordNum": "3" }, { "GameNumber": "78", "GameNumberForDisplay": null, "BallDrawing": "1,51,28,23,61,72,36,20,19,29,7,10,59,16,45,22,62,33,37,74", "NumberOfGames": 2, "BallLevels": "3?2?2?3?3?3?3?2?3?2?3?3?3?3?3?3?3?3?2?3?3?3?3?2?1?3?3?3?3?3?3?1?3?2?3?2?3?3?3?3?3?1?3?3?2?2?3?3?3?3?3?1?2?3?3?2?3?2?3?2?1?3?3?3?1?1?2?3?3?2?3?3?1?3?3?3?3?3?3?3", "BallsLevel1": "61", "BallsLevel2": "10,19,36,45", "BallsLevel3": "1,7,16,20,22,23,28,29,33,37,51,59,62,72,74", "SequenceNum": null, "NumbersPlayed": "43,42,31,36,27,10,?", "NumOfNums": "6", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.7500, "RecordNum": "4" }, { "GameNumber": "78", "GameNumberForDisplay": null, "BallDrawing": "1,51,28,23,61,72,36,20,19,29,7,10,59,16,45,22,62,33,37,74", "NumberOfGames": 2, "BallLevels": "3?2?2?3?3?3?3?2?3?2?3?3?3?3?3?3?3?3?2?3?3?3?3?2?1?3?3?3?3?3?3?1?3?2?3?2?3?3?3?3?3?1?3?3?2?2?3?3?3?3?3?1?2?3?3?2?3?2?3?2?1?3?3?3?1?1?2?3?3?2?3?3?1?3?3?3?3?3?3?3", "BallsLevel1": "61", "BallsLevel2": "10,19,36,45", "BallsLevel3": "1,7,16,20,22,23,28,29,33,37,51,59,62,72,74", "SequenceNum": null, "NumbersPlayed": "36,27,10,", "NumOfNums": "3", "Price": 0.2500, "ValueThisGame": 0.1300, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "5" }, { "GameNumber": "78", "GameNumberForDisplay": null, "BallDrawing": "1,51,28,23,61,72,36,20,19,29,7,10,59,16,45,22,62,33,37,74", "NumberOfGames": 2, "BallLevels": "3?2?2?3?3?3?3?2?3?2?3?3?3?3?3?3?3?3?2?3?3?3?3?2?1?3?3?3?3?3?3?1?3?2?3?2?3?3?3?3?3?1?3?3?2?2?3?3?3?3?3?1?2?3?3?2?3?2?3?2?1?3?3?3?1?1?2?3?3?2?3?3?1?3?3?3?3?3?3?3", "BallsLevel1": "61", "BallsLevel2": "10,19,36,45", "BallsLevel3": "1,7,16,20,22,23,28,29,33,37,51,59,62,72,74", "SequenceNum": null, "NumbersPlayed": "43,42,31,36,27,", "NumOfNums": "5", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "6" }, { "GameNumber": "79", "GameNumberForDisplay": null, "BallDrawing": "77,60,12,52,18,53,62,7,2,25,42,22,64,75,72,26,3,51,79,1", "NumberOfGames": 2, "BallLevels": "3?3?3?3?3?3?2?2?1?3?2?3?3?3?3?3?3?3?3?3?1?1?2?3?3?3?3?3?3?3?2?3?3?3?2?2?3?3?3?3?3?3?3?3?2?2?3?3?2?1?2?3?3?3?2?3?3?3?2?3?2?3?3?1?1?1?3?3?3?3?1?3?3?2?3?3?3?2?3?3", "BallsLevel1": "22,64", "BallsLevel2": "7,51", "BallsLevel3": "1,2,3,12,18,25,26,42,52,53,60,62,72,75,77,79", "SequenceNum": null, "NumbersPlayed": "36,27,10,", "NumOfNums": "3", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "7" }, { "GameNumber": "79", "GameNumberForDisplay": null, "BallDrawing": "77,60,12,52,18,53,62,7,2,25,42,22,64,75,72,26,3,51,79,1", "NumberOfGames": 2, "BallLevels": "3?3?3?3?3?3?2?2?1?3?2?3?3?3?3?3?3?3?3?3?1?1?2?3?3?3?3?3?3?3?2?3?3?3?2?2?3?3?3?3?3?3?3?3?2?2?3?3?2?1?2?3?3?3?2?3?3?3?2?3?2?3?3?1?1?1?3?3?3?3?1?3?3?2?3?3?3?2?3?3", "BallsLevel1": "22,64", "BallsLevel2": "7,51", "BallsLevel3": "1,2,3,12,18,25,26,42,52,53,60,62,72,75,77,79", "SequenceNum": null, "NumbersPlayed": "36,27,", "NumOfNums": "2", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "8" }, { "GameNumber": "79", "GameNumberForDisplay": null, "BallDrawing": "77,60,12,52,18,53,62,7,2,25,42,22,64,75,72,26,3,51,79,1", "NumberOfGames": 2, "BallLevels": "3?3?3?3?3?3?2?2?1?3?2?3?3?3?3?3?3?3?3?3?1?1?2?3?3?3?3?3?3?3?2?3?3?3?2?2?3?3?3?3?3?3?3?3?2?2?3?3?2?1?2?3?3?3?2?3?3?3?2?3?2?3?3?1?1?1?3?3?3?3?1?3?3?2?3?3?3?2?3?3", "BallsLevel1": "22,64", "BallsLevel2": "7,51", "BallsLevel3": "1,2,3,12,18,25,26,42,52,53,60,62,72,75,77,79", "SequenceNum": null, "NumbersPlayed": "43,42,31,10,", "NumOfNums": "4", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "9" }, { "GameNumber": "79", "GameNumberForDisplay": null, "BallDrawing": "77,60,12,52,18,53,62,7,2,25,42,22,64,75,72,26,3,51,79,1", "NumberOfGames": 2, "BallLevels": "3?3?3?3?3?3?2?2?1?3?2?3?3?3?3?3?3?3?3?3?1?1?2?3?3?3?3?3?3?3?2?3?3?3?2?2?3?3?3?3?3?3?3?3?2?2?3?3?2?1?2?3?3?3?2?3?3?3?2?3?2?3?3?1?1?1?3?3?3?3?1?3?3?2?3?3?3?2?3?3", "BallsLevel1": "22,64", "BallsLevel2": "7,51", "BallsLevel3": "1,2,3,12,18,25,26,42,52,53,60,62,72,75,77,79", "SequenceNum": null, "NumbersPlayed": "43,42,31,", "NumOfNums": "3", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "10" }, { "GameNumber": "79", "GameNumberForDisplay": null, "BallDrawing": "77,60,12,52,18,53,62,7,2,25,42,22,64,75,72,26,3,51,79,1", "NumberOfGames": 2, "BallLevels": "3?3?3?3?3?3?2?2?1?3?2?3?3?3?3?3?3?3?3?3?1?1?2?3?3?3?3?3?3?3?2?3?3?3?2?2?3?3?3?3?3?3?3?3?2?2?3?3?2?1?2?3?3?3?2?3?3?3?2?3?2?3?3?1?1?1?3?3?3?3?1?3?3?2?3?3?3?2?3?3", "BallsLevel1": "22,64", "BallsLevel2": "7,51", "BallsLevel3": "1,2,3,12,18,25,26,42,52,53,60,62,72,75,77,79", "SequenceNum": null, "NumbersPlayed": "43,42,31,36,27,", "NumOfNums": "5", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "11" }, { "GameNumber": "79", "GameNumberForDisplay": null, "BallDrawing": "77,60,12,52,18,53,62,7,2,25,42,22,64,75,72,26,3,51,79,1", "NumberOfGames": 2, "BallLevels": "3?3?3?3?3?3?2?2?1?3?2?3?3?3?3?3?3?3?3?3?1?1?2?3?3?3?3?3?3?3?2?3?3?3?2?2?3?3?3?3?3?3?3?3?2?2?3?3?2?1?2?3?3?3?2?3?3?3?2?3?2?3?3?1?1?1?3?3?3?3?1?3?3?2?3?3?3?2?3?3", "BallsLevel1": "22,64", "BallsLevel2": "7,51", "BallsLevel3": "1,2,3,12,18,25,26,42,52,53,60,62,72,75,77,79", "SequenceNum": null, "NumbersPlayed": "43,42,31,36,27,10,?", "NumOfNums": "6", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "12" }, { "GameNumber": "79", "GameNumberForDisplay": null, "BallDrawing": "77,60,12,52,18,53,62,7,2,25,42,22,64,75,72,26,3,51,79,1", "NumberOfGames": 2, "BallLevels": "3?3?3?3?3?3?2?2?1?3?2?3?3?3?3?3?3?3?3?3?1?1?2?3?3?3?3?3?3?3?2?3?3?3?2?2?3?3?3?3?3?3?3?3?2?2?3?3?2?1?2?3?3?3?2?3?3?3?2?3?2?3?3?1?1?1?3?3?3?3?1?3?3?2?3?3?3?2?3?3", "BallsLevel1": "22,64", "BallsLevel2": "7,51", "BallsLevel3": "1,2,3,12,18,25,26,42,52,53,60,62,72,75,77,79", "SequenceNum": null, "NumbersPlayed": "10,", "NumOfNums": "1", "Price": 0.2500, "ValueThisGame": 0.0000, "LastBallThisGame": 0.0000, "WagerType": "RE", "TicketType": "S", "SpecialType": "", "TotalAmount": 0.8800, "RecordNum": "13" }]
+        initializeGame();
+       
+
+        function initializeGame() {
+            totalRecs = ticketData.length;
+            if (totalRecs > 0)
+            {
+                currentRecNo = 0;
+                currentGameNo = 0;
+            }
+            diaplayGame();
+        }
+    
+        function ShowNextGame() {
+            for (i = 1; i < 81 ; i++) {
+             //   $('KenoCardDiv' + i).className = 'KenoCardDivdrawDiv';
+                
+                jQuery('#KenoCardDiv' + i).animate({
+                    backgroundColor: "#aa0000",
+                    color: "#fff"}, 1000);
+            }
+            for (i = 1; i < 81 ; i++) {
+                //   $('KenoCardDiv' + i).className = 'KenoCardDivdrawDiv';
+
+                jQuery('#KenoCardDiv' + i).animate({
+                    backgroundColor: "#5345",
+                    color: "#fff"
+                }, 1000);
+            }
+            for (i = 1; i < 81 ; i++) {
+                //   $('KenoCardDiv' + i).className = 'KenoCardDivdrawDiv';
+
+                jQuery('#KenoCardDiv' + i).animate({
+                    backgroundColor: "navy",
+                    color: "#fff"
+                }, 1000);
+            }
+            //for (i = 1; i < 81 ; i++) {
+            //    $('KenoCardDiv' + i).className = 'KenoCardDivImageBorder';
+            //}
+            //for (i = 1; i < 81 ; i++) {
+            //    $('KenoCardDiv' + i).className = 'KenoCardDivdivEmpty';
+            //}
+            //for (i = 1; i < 81 ; i++) {
+            //    $('KenoCardDiv' + i).className = 'KenoCardDivdrawDiv';
+            //}
+            //$.each($('[class^="KenoCardDiv"]'), function (key, value) {
+            //    console.log(key, value);
+            //});
+        }
+
+        function nextWay() {
+            if (currentRecNo < totalRecs) {
+                currentRecNo = currentRecNo + 1;
+            }
+            else {
+                currentRecNo = 0;
+            }
+            diaplayGame();
+        }
+
+        function nextGame() {
+            if (currentGameNo < gameStartingRecs.split(",").length)
+            {
+                currentGameNo = currentGameNo + 1;
+                currentRecNo = gameStartingRecs[currentGameNo];
+            }
+            else
+            {
+                currentGameNo = 0;
+                currentRecNo = 0;
+            }
+            diaplayGame();
+        }
+
+        function diaplayGame() {
+            currentRecObject = ticketData[currentRecNo];
+            selectedNumbersList = currentRecObject.NumbersPlayed.split(",");
+            drawNumbersList = currentRecObject.BallDrawing.split(",");
+        }
+
+        function setGameData() {
+            if (currentRec < totalRec) {
+                currentRec = currentRec + 1;
+            }
+            else {
+                currentRec = 0;
+            }
+        }
+
+        function getRecord(obj, key, val) {
+            var records = [];
+            for (var i in obj) {
+                if (!obj.hasOwnProperty(i)) continue;
+                if (typeof obj[i] == 'object') {
+                    records = objects.concat(getRecord(obj[i], key, val));
+                } else if (i == key && obj[key] == val) {
+                    records.push(obj);
+                }
+            }
+            if (records.length == 1)
+            { return records[0]; }
+            else
+            { return null; }
+        }
+
+
+        //This is sampel to get data
+        function ShowData() {
+
+            alert(ticketData[currentRec].NumbersPlayed);
+            $('divNumPl').innerHTML = ticketData[currentRec].NumbersPlayed;
+            var selRec = getRecords(ticketData, "RecordNum", currentRec);
+            $('divOth').innerHTML = selRec[0].ValueThisGame;
+
+        }
+
+        function getRecords(obj, key, val) {
+            var objects = [];
+            for (var i in obj) {
+                if (!obj.hasOwnProperty(i)) continue;
+                if (typeof obj[i] == 'object') {
+                    objects = objects.concat(getRecords(obj[i], key, val));
+                } else if (i == key && obj[key] == val) {
+                    objects.push(obj);
+                }
+            }
+            return objects;
+        }
+
+    </script>
+
+
+</head>
+<body>
+
+    <ul id="cards"></ul>
+    <script src="KenoScriptyBase2.js" type="text/javascript"></script>
+
+    <div id="kenoDiv" class="mainText">
+        KENO   GAME
+    </div>
+    <br />
+    <br />
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <div class="resultsText">
+
+                    <div id="gameNumberDisplay"></div>
+                    <br />
+                    <br />
+                    <br />
+                    <table width="100%">
+                        <tr>
+                            <td align="center"><a href="#" class="buttonStyle2" onclick="javascript:ShowNextGame();">Next Game</a></td>
+
+                        </tr>
+                    </table>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <div id="CurrentWayAmountDisplay"></div>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    WAY
+                    <br />
+                    <br />
+                    <div id="CurrentWayDisplay"></div>
+                    <br />
+                    <br />
+                    <br />
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <input type="button" value="Next Way" class="buttonStyle2" onclick="javascript: DisplayNextWay" /></td>
+                        </tr>
+                    </table>
+                    <br />
+                    <br />
+                    <br />
+                    TOTAL
+                        <br />
+                    <div id="CumulativeAmountDisplay"></div>
+                    <br />
+                    <br />
+                </div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+
