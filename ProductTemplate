@@ -1,0 +1,883 @@
+@model Tennant.GlobalAttributes.Web.ViewModels.ProductTemplateListViewModel
+@using Tennant.GlobalAttributes.Web.Utils
+
+
+<style>
+    table {
+        border: 1px solid silver;
+    }
+    th {
+        border: 1px solid black;
+        background-color: silver;
+        padding: 6px;
+        text-align: center; 
+        font-size: .75em;       
+    }
+    td {
+        border: 1px solid black;        
+        font-size: .75em;       
+        padding: 3px;
+        text-align: center; 
+    }
+    li { 
+        font-weight: normal;
+    }
+    li {
+        list-style-type:none;        
+        margin-left: -25px;
+    }
+
+    input {
+        width: 100px;
+    }
+
+    textarea{
+      width: 300px;
+    }
+    .GAL .man-us, .GAL .man-mx, .GAL .man-ex{
+        background-color: #00CCFF;
+    }
+    .GAL .man-UNKNOWN1 {
+        background-color: #CCFFCC;
+    }
+    .GAL .man-au {
+        background-color: #FFFF99;
+    }
+    .GAL .man-jp {
+        background-color: #FFCC99;
+    }
+    .GAL .man-eu {
+        background-color: #CCFFFF;
+    }
+    .GAL .man-cn {
+        background-color: #00FF00;
+    }
+    .GAL .man-UNKNOWN2 {
+        background-color: #00FFFF;
+    }
+
+    .GAL .issueOK {
+        background-color: green;
+    }
+    .GAL .issueWarning {
+        background-color: yellow;
+    }
+    .GAL .issueError {
+        background-color: red;
+    }
+
+    .changeLog-cell {
+        white-space: nowrap;
+        text-align: left;
+    }
+    .changeLog-ViewDetails {
+        color: blue;
+        cursor: pointer;
+    }
+</style>
+
+<h2>@ViewBag.Title
+    @if (Model.product.IsLocked)
+    {
+         <img id="imageLock" src="~/Content/Images/lock.png" islocked="true" productid="@Html.Encode(Model.product.ID)" style="height:20px" />
+    }
+    else
+    {
+         <img id="imageLock" src="~/Content/Images/unlock.png" islocked="false" productid="@Html.Encode(Model.product.ID)" style="height:20px" />
+    }
+</h2>
+
+<h3>@ViewBag.Message</h3>
+
+<ul>
+    <li><a href="#FeatureTable">VC Template</a></li>
+    <li><a href="#MarketingTable">Marketing Availability Tables</a></li>
+    <li><a href="#ManufacturingTable">Manufacturing Manufacturing Tables</a></li>
+</ul>
+
+<div id="buttonGroup">
+    <ul id="ipcGroupingList">
+        <li ipcgroupid="0">All</li>
+        @foreach (var item in Model.IPCGroups)
+        {
+            <li ipcgroupid="@Html.Encode(item.ID)">@Html.DisplayFor(IPCGroup => item.Name)</li>
+        }        
+    </ul>
+</div>
+<br /><br />
+<a name="FeatureTable"></a>
+<table id="ProductTemplateTable" productId="@Model.product.ID" class="GAL tableWithFloatingHeader">
+    <thead>
+    <tr>
+        <th>Action</th>
+        <th>Approval</th>
+        <th>IPC Group</th>
+        <th>Attribute<br /><a onclick="switchDisplay('Attribute');">Switch</a></th>
+        <th>Feature<br /><a onclick="switchDisplay('Feature');">Switch</a></th>        
+        <th>Marketing Rules</th>        
+        <th>Internal</th>        
+        @foreach (var region in Model.Regions)
+        {
+            <th class="man-@region.ShortCode.ToLower()">@region.Name</th>
+        }       
+        <th>Attachment Rate</th>
+        <th>Attachment Rate Inconsistency</th>
+        <th>Profitability</th>
+        <th>Profitability Inconsistency</th>
+        @foreach (var plant in Model.Plants)
+        {
+            var shortCode = "";
+            if (plant.EU_Regions.FirstOrDefault() != null)
+            {
+                shortCode = plant.EU_Regions.FirstOrDefault().ShortCode.ToLower();
+            }
+            <th class="man-@shortCode">@plant.Name SBOM Material</th>
+            <th class="man-@shortCode">@plant.Name SBOM Qty</th>
+            <th class="man-@shortCode">@plant.Name SBOM Rules</th>
+            <th class="man-@shortCode">@plant.Name SBOM Pick</th>
+            <th class="man-@shortCode">@plant.Name SBOM Special</th>
+            <th class="man-@shortCode">@plant.Name SBOM Cost</th>           
+        }       
+        <th>Change Log</th>       
+    </tr>
+    </thead>
+    @foreach (var pt in Model.ProductTemplateLine)
+    {
+        <tr ipcgroupingid="@Html.Encode(pt.IPCGroupingId)" attributeId="@Html.Encode(pt.AttributeId)" featureId="@Html.Encode(pt.FeatureId)" featureProductId="@Html.Encode(pt.ID)" class="@(pt.ID == -1 ? "hidden" : "read-row")">
+            <td>
+                @if (((UserPermission)ViewData["UserPermission"]).HasEditTemplateLine)
+                {
+                    <div class="read-field">
+                        <input type="button" value="Edit" class="edit-button" />
+                    </div>
+                }
+            </td>
+            <td>
+                <div class="read-field">
+                    @if (pt.IsApproved)
+                    { <p>Approved</p>}
+                    else
+                    {
+                        if (((UserPermission)ViewData["UserPermission"]).HasApproveTemplateLine)
+                        {
+                            <input type="button" class="approval-button" value="Approve" />
+                        }
+                        else
+                        {
+                            <p>Pending</p>
+                        }
+                    }
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => pt.IPCGroupingName)
+            </td>
+            <td attribute="@Html.Encode(pt.AttributeName)" class="AttributeColumn">
+                <div class="read-field">                    
+                    <span class="customerNameAttribute"> @Html.DisplayFor(modelItem => pt.AttributeName)   </span>
+                    <span class="characteristicNameAttribute" style="text-transform: uppercase; display:none;">@Html.DisplayFor(modelItem => pt.AttributeCharacteristicName)</span>                                  
+                </div>
+            </td>            
+            <td feature="@Html.Encode(pt.FeatureName)" class="FeatureColumn">
+                <div class="read-field">
+                    <span class="customerNameFeature"> @Html.DisplayFor(modelItem => pt.FeatureName)  </span>
+                    <span class="characteristicNameFeature" style="text-transform: uppercase; display:none;">@Html.DisplayFor(modelItem => pt.FeatureCharacteristicName)</span>                  
+                </div>
+            </td>
+            <td>                
+               <div class="read-field">                   
+                   @Html.DisplayFor(modelItem => pt.MarketingRuleName) <br />
+                   @Html.DisplayFor(modelItem => pt.MarketingRuleText)
+                </div>
+            </td>
+            <td>
+               <div class="read-field">
+                    @Html.DisplayFor(modelItem => pt.Internal, "BooleanWithDash")
+                </div>
+                <div class="editor-field hidden">
+                    @Html.EditorFor(modelItem => pt.Internal, "BooleanWithDash")
+                </div> 
+            </td>
+            @foreach (var region in pt.MarketingRegionValues)
+            {
+                <td id="@Html.Encode(region.ID)" feature_productid="@Html.Encode(region.Feature_ProductId)" euregionid="@Html.Encode(region.EU_RegionId)" euregion_plantid="@Html.Encode(region.EURegion.PlantId)" class="man-@region.EURegion.ShortCode.ToLower()"> 
+                    <div class="read-field region-field">
+                        @Html.DisplayFor(modelItem => region.RegionValue)
+                    </div>
+                </td>
+            }            
+            <td>
+                    @Html.DisplayFor(modelItem => pt.AttachmentRateReporting)
+            </td>
+            <td>
+                <div class="read-field">
+                    @Html.DisplayFor(modelItem => pt.AttachmentRateInconsistency)
+                </div>
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => pt.Profitability)
+            </td>
+            <td>
+                <div class="read-field">
+                    @Html.DisplayFor(modelItem => pt.ProfitabilityInconsistency)
+                </div>
+            </td>
+           
+            @foreach (var plant in pt.PlantValues)
+            {
+                var naHide = "hidden";
+                var readHide = "";
+                var rv = pt.MarketingRegionValues.Where(mrv => mrv.EURegion.PlantId == plant.PlantId).FirstOrDefault();
+                if (rv != null && (rv.RegionValue == Tennant.GlobalAttributes.Web.Models.RegionValue.Unknown || rv.RegionValue == Tennant.GlobalAttributes.Web.Models.RegionValue.NA))
+                {
+                    naHide = "";
+                    readHide = "hidden";
+                }
+                
+                <td id="@Html.Encode(plant.ID)" plantid="@Html.Encode(plant.PlantId)" feature_productid="@Html.Encode(plant.Feature_ProductId)" class="sbom-material man-@plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower()" > 
+                    <div class="read-field @readHide">
+                        @Html.DisplayFor(modelItem => plant.SBOM_Material) 
+                        <br />
+                        @if (plant.MaterialTableId != 0 && pt.ManufacturingRules.Where(m => m.ID == plant.MaterialTableId).FirstOrDefault() != null)
+                        {
+                            @Html.Encode(pt.ManufacturingRules.Where(m => m.ID == plant.MaterialTableId).FirstOrDefault().Name)
+                        }
+                        @Html.DisplayFor(modelItem => plant.MaterialPartNumber)
+                    </div>
+                    <div class="na-field @naHide">NA</div>
+                </td>
+                <td plantid="@Html.Encode(plant.PlantId)" class="sbom-quantity man-@plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower()">
+                    <div class="read-field @readHide">
+                        @if (plant.IsAvailable)
+                        { @Html.DisplayFor(modelItem => plant.SBOM_Qty)}
+                    </div>
+                    <div class="na-field @naHide">NA</div>
+                </td>
+                <td plantid="@Html.Encode(plant.PlantId)" class="sbom-rules man-@plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower()">
+                    <div class="read-field @readHide">
+                        @if (plant.IsAvailable)
+                        { @Html.DisplayFor(modelItem => plant.SBOM_Rules)}
+                    </div>
+                    <div class="na-field @naHide">NA</div>
+                </td>
+                <td plantid="@Html.Encode(plant.PlantId)" class="sbom-pick man-@plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower()">
+                    <div class="read-field @readHide">
+                        @if (plant.IsAvailable)
+                        { @Html.DisplayFor(modelItem => plant.SBOM_Pick)}
+                    </div>
+                    <div class="na-field @naHide">NA</div>
+                </td>
+                <td plantid="@Html.Encode(plant.PlantId)" class="sbom-special man-@plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower()">
+                    <div class="read-field @readHide">
+                       @if (plant.IsAvailable)
+                       {  @Html.DisplayFor(modelItem => plant.SBOM_Special)}
+                    </div>
+                    <div class="na-field @naHide">NA</div>
+                </td>
+                <td plantid="@Html.Encode(plant.PlantId)" class="sbom-cost man-@plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower()">
+                    <div class="read-field @readHide">
+                        @if (plant.IsAvailable)
+                        { @Html.DisplayFor(modelItem => plant.SBOM_Cost)}
+                    </div>
+                    <div class="na-field @naHide">NA</div>
+                </td>
+            }    
+            <td class="changeLog-cell">    
+                <ul class="changeLog-ul">
+                @foreach (var cl in pt.ChangeLogs.OrderBy(c => c.IsResolved).ThenByDescending(c => c.DateOfChange).Take(3))
+                {
+                    <li changeLogId="@Html.Encode(cl.ID)" >
+                        @Html.DisplayFor(modelItem => cl.ChangeId)
+                        @Html.Encode(cl.ChangeId);
+                        @if (cl.IsResolved == true)
+                        {<text>-Resolved</text>}
+                    </li>
+                }                
+                <li><div class="changeLog-ViewDetails">View Details</div></li>
+                </ul>  
+                               
+                <div class="changeLog-details" title="Change log details" style="display: none;">
+                    <table>
+                        <tr>
+                            <th>Action</th>
+                            <th>Log Id</th>
+                            <th>Change Id</th>
+                            <th>Date of Change</th>
+                            <th>Change Description</th>                                
+                            <th>Requested By</th>
+                            <th>Created By</th>
+                            <th>Is Resolved</th>
+                        </tr>
+                    @foreach (var cl in pt.ChangeLogs.OrderBy(c=>c.IsResolved).ThenByDescending(c=>c.DateOfChange))
+                    {                             
+                        <tr isResolved="@Html.Encode(cl.IsResolved)" featureProductId="@Html.Encode(pt.ID)" changeLogId="@Html.Encode(cl.ID)">
+                            <td>
+                                @if( ((UserPermission)ViewData["UserPermission"]).HasEditChangelog) {
+                                    <div class="read-field">
+                                        <input type="button" value="Edit" class="edit-button-changeLog" />
+                                    </div>
+                                    <div class="editor-field hidden">
+                                        <input type="button" value="Save" class="save-button-changeLog" />
+                                        <input type="button" value="Cancel" class="cancel-button-changeLog" />
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <div class="read-field">
+                                    @Html.DisplayFor(modelItem => cl.LogId)
+                                </div>
+                                <div class="editor-field hidden">
+                                        @Html.EditorFor(modelItem => cl.LogId)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="read-field">
+                                    @Html.DisplayFor(modelItem => cl.ChangeId)
+                                </div>
+                                <div class="editor-field hidden">
+                                        @Html.EditorFor(modelItem => cl.ChangeId)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="read-field">
+                                    @Html.DisplayFor(modelItem => cl.DateOfChange)
+                                </div>
+                                <div class="editor-field hidden">
+                                        @Html.EditorFor(modelItem => cl.DateOfChange)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="read-field">
+                                    @Html.DisplayFor(modelItem => cl.Change)
+                                </div>
+                                <div class="editor-field hidden">
+                                    @Html.EditorFor(modelItem => cl.Change)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="read-field">
+                                    @Html.DisplayFor(modelItem => cl.RequestedBy)
+                                </div>
+                                <div class="editor-field hidden">
+                                    @Html.EditorFor(modelItem => cl.RequestedBy)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="read-field">
+                                    @Html.DisplayFor(modelItem => cl.CreatedBy)
+                                </div>
+                                <div class="editor-field hidden">
+                                    @Html.EditorFor(modelItem => cl.CreatedBy)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="read-field">
+                                    @Html.DisplayFor(modelItem => cl.IsResolved)
+                                </div>
+                                <div class="editor-field hidden">
+                                    @Html.EditorFor(modelItem => cl.IsResolved)
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                        <tr class="hidden" changeLogId="-1" featureProductId="@Html.Encode(pt.ID)">                               
+                            <td>
+                                <input type="button" value="Save" class="save-button-changeLog" />
+                                <input type="button" value="Cancel" class="cancel-button-changeLog" />                                                            
+                            </td>
+                             <td>
+                                <input type="text" id="cl_LogId" />
+                            </td>
+                            <td>
+                                <input type="text" id="cl_ChangeId" />
+                            </td>
+                            <td>
+                                <input type="text" id="cl_DateOfChange" />
+                            </td>
+                            <td>
+                                <input type="text" id="cl_Change" />
+                            </td>
+                            <td>
+                                <input type="text" id="cl_RequestedBy" />
+                            </td>
+                            <td>
+                                <input type="text" id="cl_CreatedBy" />
+                            </td>
+                            <td>
+                                <select id="cl_IsResolved">
+                                    <option value="false">N</option>
+                                    <option value="true">Y</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    @if (((UserPermission)ViewData["UserPermission"]).HasEditChangelog)
+                    {
+                        <input type="button" value="Add New Log" class="add-button-changeLog" /> 
+                    }
+                </div>                    
+                 
+                                                                      
+            </td>
+        </tr>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    }
+    
+</table>
+
+<a name="MarketingTable"></a>
+@Html.Action("Index", "MarketingRule", new { productId = Model.product.ID })
+
+<a name="ManufacturingTable"></a>
+@Html.Action("Index", "ManufacturingRule", new { productId = Model.product.ID })
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //console.log("loaded");
+        if ($("#imageLock").attr("islocked") == "true")
+            $('.edit-button').addClass('hidden');
+        
+        EnableChangeLog();
+
+        $('.add-attribute-button').click(function () {
+            $('#AddAttribute_' + $(this).attr('attributeId')).dialog();
+        });
+        $('.add-feature-button').click(function () {
+            var productId = '@Model.product.ID';
+            var featureIds = new Array();            
+            var url = '@Url.Action("AddFeature", "ProductTemplate")';
+            
+            $('#AddAttribute_' + $(this).attr('attributeId') + ' :checked').each(function () {
+                featureIds.push($(this).attr('id'));
+            });
+            
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                cache: false,
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ ProductId: productId, FeatureIds: featureIds }),
+                beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+                success: function () { RefreshPage();},
+                error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "An error occured adding the features to the template"); return false; }
+            });
+        });
+        $('.edit-button-old').click(function () {
+            var row = $(this).parents('tr');
+            HideRows('featureproductid', row.attr('featureproductid'));
+            row.find('.read-field').addClass('hidden')
+            row.find('.editor-field').removeClass('hidden')
+            $('.edit-button').addClass('hidden');
+        });
+        $('.edit-button').click(function () {
+            var row = $(this).parents('tr');
+            HideRows('featureproductid', -1);
+            var editLineUrl = '@Url.Action("EditLine", "ProductTemplate")'+'/'+row.attr('featureproductid');
+            $.ajax({
+                type: "GET",
+                url: editLineUrl,
+                cache: false,            
+                beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+                success: function (response, status, xhr) {
+                    $('#ProductTemplateTable').append(response);
+                    RegisterEditEvents();
+                    EnableChangeLog();
+                    row.find('.regionvalue').trigger('change'); // Make visibility is set correctly on the Plant data
+                    row.find('.sbom-material').trigger('change'); // Make edit UI correct
+                    $('#workingOnItContainer').addClass('hidden');
+                },
+                //error: function () { alertify.error("An Error occured while getting details") }
+                error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "Error getting Details "); return false; }
+            });
+        });
+
+         $('.approval-button').click(function () {
+            var obj = this;
+            
+            alertify.confirm("Are you sure you want to Approve this line?", function (e) {
+                if (e) {
+                    var url = '@Url.Action("ApproveLine","ProductTemplate")' + '/' + $(obj).parents('tr').attr('featureProductId');                    
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        dataType: "json",
+                        cache: false,                        
+                        contentType: 'application/json; charset=utf-8',
+                        beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+                        success: function () { RefreshPage();},
+                        error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "An error occured during Approval"); return false; }
+                    });
+                } else {
+                    // user clicked "cancel"
+                }
+            });
+        });
+          
+
+        @if (((UserPermission)ViewData["UserPermission"]).HasApproveTemplateLine)
+        {
+            <text>
+            $('#imageLock').click(function() {
+                var image = this;
+                alertify.confirm("Are you sure you want to change the lock on this item?", function (e) {
+                    if (e) {
+                        window.location = '@Url.Action("ToggleLock", "ProductTemplate")' +'/' + $(image).attr('productid');
+                    }
+                });
+            });
+            </text>
+        }
+
+        $('#IPCGroupingId').change(function () {
+            $('#AttributeId').empty();
+            $('#AttributeList').children('option').each(function(){
+                if ($(this).attr('ipcgroupid') == $('#IPCGroupingId').val())
+                    $('#AttributeId').append($(this).clone());
+            })
+        });
+
+        $('#ipcGroupingList li').click(function () {
+            toggleIPCGroup(this);
+        });
+
+
+        $('#add-marketingrule').click(function () {
+            $('#marketing-attribute-picker').dialog();
+        });
+        
+
+        $('#IPCGroupingId').trigger('change');              
+        $('tr[featureid=-1]').find('.remove-button').addClass('hidden');
+
+        //load filters if available
+        LoadIPCGroupFilter();
+        $('.read-row .region-field').each(function () {
+            var plantId = $(this).parents('td').attr('euregion_plantid');
+            ReadTrimPlantCells($(this).parents('tr'), plantId);
+        });
+    }); //End of $(document).ready
+
+    function EnableChangeLog() {
+        $('.changeLog-ViewDetails').click(function () {
+            $(this).parent().parent().parent().find('.changeLog-details').dialog({ width: 800 });
+        });
+        $('.add-button-changeLog').click(function () {
+            $('tr[changeLogId=-1]').removeClass('hidden')
+        });
+        $('.edit-button-changeLog').click(function () {
+            $(this).parents('tr').find('.read-field').addClass('hidden')
+            $(this).parents('tr').find('.editor-field').removeClass('hidden')
+            $('.edit-button').addClass('hidden');
+        });
+        $('.cancel-button-changeLog').click(function () {
+            $(this).parents('tr').find('.read-field').removeClass('hidden')
+            $(this).parents('tr').find('.editor-field').addClass('hidden')
+            $(this).parents('tr').find('.create-field').addClass('hidden')
+            $('tr[changeLogId=-1]').addClass('hidden')
+            $('.edit-button').removeClass('hidden');
+        });
+
+        $('.save-button-changeLog').click(function () {
+            SaveChangeLogLine($(this).parents('tr'));
+            $(this).parents('tr').find('.read-field').removeClass('hidden')
+            $(this).parents('tr').find('.editor-field').addClass('hidden')
+            $(this).parents('tr').find('.create-field').addClass('hidden')
+            $('tr[changeLogId=-1]').addClass('hidden')
+        });
+    }
+
+    function RegisterEditEvents() {
+        $('.edit-row .save-button').click(function () {
+            SaveProductTemplateLine($(this).parents('tr'),false);
+            ShowRows('featureproductid');
+            $(this).parents('tr').find('.read-field').removeClass('hidden')
+            $(this).parents('tr').find('.editor-field').addClass('hidden')
+            $(this).parents('tr').find('.create-field').addClass('hidden')
+            $('tr[featureid=-1]').addClass('hidden')
+        });
+        $('.edit-row .cancel-button').click(function () {
+            ShowRows('featureproductid');
+            $(this).parents('tr').find('.read-field').removeClass('hidden')
+            $(this).parents('tr').find('.editor-field').addClass('hidden')
+            $(this).parents('tr').find('.create-field').addClass('hidden')
+            $('tr[featureid=-1]').addClass('hidden')
+            $('.edit-button').removeClass('hidden');
+        });
+        $('.approval-button').click(function () {
+            var obj = this;
+            
+            alertify.confirm("Are you sure you want to Approve this line?", function (e) {
+                if (e) {
+                    SaveProductTemplateLine($(obj).parents('tr'),true);
+                } else {
+                    // user clicked "cancel"
+                }
+            });
+        });
+        $('.edit-row .sbom-material').change(function () {
+            if ($(this).closest('td').find('.na-field').hasClass('hidden')) {
+                var row = $(this).parents('tr');
+                var plantId = $(this).parents('td').attr('plantid');
+                var partNumber = $(this).parents('td').find('#plant_MaterialPartNumber');
+                var materialTable = $(this).parents('td').find('#plant_MaterialTableId');
+                var quantity = $(row).find('.sbom-quantity[plantid=' + plantId + ']');
+                if ($(this).val() == "PartNumber" || $(this).val() == "InstalledLocally") {
+                    partNumber.show();
+                    materialTable.hide();
+                    quantity.find('.read-field').addClass('hidden');
+                    quantity.find('.editor-field').removeClass('hidden');
+                    quantity.find('.na-field').addClass('hidden');
+
+                } else if ($(this).val() == "Table") {
+                    partNumber.hide();
+                    materialTable.show();
+                    quantity.find('.read-field').addClass('hidden');
+                    quantity.find('.editor-field').removeClass('hidden');
+                    quantity.find('.na-field').addClass('hidden');
+
+                } else {
+                    partNumber.hide();
+                    materialTable.hide();
+                    quantity.find('.read-field').addClass('hidden');
+                    quantity.find('.editor-field').addClass('hidden');
+                    quantity.find('.na-field').removeClass('hidden');
+
+                } 
+            }
+        });
+
+        $('.remove-button').click(function () {
+            var obj = this;
+            alertify.confirm("Are you sure you want to remove this line?", function (e) {
+                if (e) {
+                    var url = '@Url.Action("RemoveFeature", "ProductTemplate")';
+                    var featureProductId = $(obj).parents('tr').attr('featureProductId');
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        dataType: "json",
+                        cache: false,                        
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({ FeatureProductId: featureProductId }),
+                        beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+                        success: function () { RefreshPage();},
+                        error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "An error occured removing the feature from the template"); return false; }                        
+                    });
+                } else { }
+            });
+        });
+
+        //figure out the issue color for the cell
+        $('.changeLog-cell').each(function () {
+            var rowCount = 0;
+            var resolvedCount = 0;
+
+            $(this).find('.changeLog-details').find('table tr').each(function () {
+                if ($(this).attr('isResolved') != null)
+                    rowCount += 1;
+                if ($(this).attr('isResolved') == 'True')
+                    resolvedCount += 1;
+            });
+
+            if (rowCount > 0) {
+                if (rowCount == resolvedCount)
+                    $(this).addClass('issueOK');
+                else if (resolvedCount / rowCount < .5)
+                    $(this).addClass('issueError');
+                else if (resolvedCount / rowCount < .75)
+                    $(this).addClass('issueWarning');
+            }            
+        });
+        $('.edit-row .regionvalue').change(function () {
+            var ddl = $(this).val();
+            var plantId = $(this).parents('td').attr('euregion_plantid');
+            EditTrimPlantCells($(this).parents('tr'),plantId);
+        });
+        $('.edit-row .regionvalue').each(function () {
+            var ddl = $(this).val();
+            var plantId = $(this).parents('td').attr('euregion_plantid');
+            EditTrimPlantCells($(this).parents('tr'), plantId);
+        });
+    }
+    
+    
+    function EditTrimPlantCells(row, plantId) {
+        var valuesForRegion = GetRegionValuesForRow(row, plantId);
+        if (_.contains(valuesForRegion, "X") || _.contains(valuesForRegion, "SoftDefault") || _.contains(valuesForRegion, "Mandatory") || _.contains(valuesForRegion, "Table")) {
+            $(row).find('[plantid=' + plantId + ']').find('.read-field').addClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.editor-field').removeClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.na-field').addClass('hidden');
+            $(row).find('.sbom-material').trigger('change');
+        }
+        else {
+            $(row).find('[plantid=' + plantId + ']').find('.read-field').addClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.editor-field').addClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.na-field').removeClass('hidden');
+        }
+    }
+
+    function ReadTrimPlantCells(row, plantId) {
+        var valuesForRegion = GetRegionValuesForReadRow(row, plantId);
+        //console.log(valuesForRegion);
+        if (_.contains(valuesForRegion, "X") || _.contains(valuesForRegion, "Soft Default") || _.contains(valuesForRegion, "Mandatory") || _.contains(valuesForRegion, "Table")) {
+            //console.log("hit");
+            $(row).find('[plantid=' + plantId + ']').find('.read-field').removeClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.editor-field').addClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.na-field').addClass('hidden');
+            $(row).find('.sbom-material').trigger('change');
+        }
+        else {
+            $(row).find('[plantid=' + plantId + ']').find('.read-field').addClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.editor-field').addClass('hidden');
+            $(row).find('[plantid=' + plantId + ']').find('.na-field').removeClass('hidden');
+        }
+    }
+
+    function SaveChangeLogLine(row) {
+        var url = '@Url.Action("SaveChangeLog", "ProductTemplate")';
+
+        var changeLog = {
+                LogId: $(row).find('#cl_LogId').val(),
+                ChangeId: $(row).find('#cl_ChangeId').val(),
+                DateOfChange: $(row).find('#cl_DateOfChange').val(),
+                Change: $(row).find('#cl_Change').val(),
+                RequestedBy: $(row).find('#cl_RequestedBy').val(),
+                CreatedBy: $(row).find('#cl_CreatedBy').val(),
+                IsResolved: $(row).find('#cl_IsResolved').val(),
+                FeatureProductId: $(row).attr('featureProductId'),
+                ID: $(row).attr('changeLogId'),
+                IsDeleted: false                
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            cache: false,            
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(changeLog),
+            beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+            success: function () { RefreshPage();},
+            error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "An Error occured while saving change log"); return false; }
+        });        
+    }
+
+    function SaveProductTemplateLine(row,isApproved) {
+        //maps the region data array
+        var marketingRegionData = MapFeatureProductRegionData(row);
+        var productPlantData = MapFeatureProductPlantData(row);
+
+        var featureProductId = $(row).attr('featureProductId');
+        var url = '@Url.Action("UpdateLine", "ProductTemplate")'+'/'+featureProductId;
+
+
+        var rowDTO = {
+            ID: featureProductId,
+            IsApproved: isApproved,
+            MarketingRuleId: $(row).find('#MarketingRuleId').val(),
+            MarketingRuleName: "",
+            MarketingRuleText: $(row).find('#MarketingRuleText').val(),
+            Internal: $(row).find('#Internal').val(),
+            AttachmentRateInconsistency: $(row).find('#AttachmentRateInconsistency').val(),
+            ProfitabilityInconsistency: $(row).find('#ProfitabilityInconsistency').val(),
+            MarketingRegionValues: marketingRegionData,
+            PlantValues: productPlantData
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            cache: false,            
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(rowDTO),
+            beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+            success: function () { RefreshPage(); },
+            error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "An Error occured while saving"); return false; }            
+        });
+    }
+
+    function MapFeatureProductRegionData(row) {
+        var regionData = [];
+        var regionCells = $(row).find('[euregionid]');
+        for (var i = 0; i < regionCells.length; i++) {
+            var cell = regionCells[i];
+            var id = $(cell).attr('id');
+            var feature_productid = $(cell).attr('feature_productid');
+            var regionId = $(cell).attr('euregionid');
+            var regionValue = $(cell).find("#region_RegionValue").val();
+            var regionDTO = {
+                ID: id,
+                RegionValue: regionValue,
+                Feature_ProductId: feature_productid,
+                EU_RegionId: regionId
+            }
+            regionData.push(regionDTO);
+        }
+        return regionData;
+    }
+
+    function MapFeatureProductPlantData(row) {
+        var plantData = [];
+        var plants = GetPlantsForRow(row);
+        for (var i = 0; i < plants.length; i++) {
+            var plantId = plants[i];
+            var plantDTO = MapPlantData(row,plantId);
+            plantData.push(plantDTO);
+        }
+        return plantData;
+    }
+
+    function MapPlantData(row,plantId) {
+        var featureProductPlant = {
+            ID: $(row).find('.sbom-material[plantid='+plantId+']').attr('id') ,
+            SBOM_Material:$(row).find('.sbom-material[plantid='+plantId+']').find('#plant_SBOM_Material').val(),
+            MaterialPartNumber:$(row).find('.sbom-material[plantid='+plantId+']').find('#plant_MaterialPartNumber').val(),
+            MaterialTableId:$(row).find('.sbom-material[plantid='+plantId+']').find('#plant_MaterialTableId').val(),
+            SBOM_Qty: $(row).find('.sbom-quantity[plantid='+plantId+']').find("#plant_SBOM_Qty").val(),
+            SBOM_Rules: $(row).find('.sbom-rules[plantid='+plantId+']').find("#plant_SBOM_Rules").val(),
+            SBOM_Pick: $(row).find('.sbom-pick[plantid='+plantId+']').find("#plant_SBOM_Pick").val(),
+            SBOM_Special: $(row).find('.sbom-special[plantid='+plantId+']').find("#plant_SBOM_Special").val(),
+            SBOM_Cost: $(row).find('.sbom-cost[plantid='+plantId+']').find("#plant_SBOM_Cost").val(),
+            Feature_ProductId: $(row).find('.sbom-material[plantid='+plantId+']').attr('feature_productid'),
+            PlantId: plantId
+        };
+        return featureProductPlant;
+    }
+
+    // Returns an array of Plant.ID's
+    function GetPlantsForRow(row) {
+        var cells = $(row).find('[plantid]');
+        return _.uniq(_.map(cells,function(c){
+             return $(c).attr('plantid');
+        }))
+    }
+
+    function GetRegionValuesForRow(row,plantId) {
+        var ddls = $(row).find('[euregion_plantid='+plantId+']').find('select');
+        return _.uniq(_.map(ddls,function(c){
+             return $(c).val();
+        }))
+    }
+
+    function GetRegionValuesForReadRow(row, plantId) {
+        var divs = $(row).find('[euregion_plantid=' + plantId + ']').find('.region-field');
+        return _.uniq(_.map(divs, function (c) {
+            return $(c).text().trim();
+        }))
+    }
+   
+</script>
