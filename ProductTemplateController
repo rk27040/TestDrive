@@ -1,0 +1,266 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using Tennant.GlobalAttributes.Web.Models;
+using Tennant.GlobalAttributes.Web.Utils;
+using Tennant.GlobalAttributes.Web.ViewModels;
+
+namespace Tennant.GlobalAttributes.Web.Controllers
+{
+    public class ProductTemplateController : Controller
+    {
+        private WebContext context = new WebContext();
+
+        //
+        // GET: /ProductTemplate/
+
+        public ActionResult Index()
+        {
+            return HttpNotFound();
+           // return View(new ProductTemplateListViewModel(1));
+        }
+
+        // GET: /PlantOptions/Details/5
+        public ActionResult Details(int id = 0)
+        {
+            if(TempData["Message"] != null)
+                ViewBag.Message = TempData["Message"];
+
+            ViewData["UserPermission"] = UserPermission.ForUser();
+
+            ProductTemplateListViewModel pt = new ProductTemplateListViewModel(id);
+          //Export export = new Export();
+          //export.SaveWorkbook(pt);
+            
+            if (pt == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Title = pt.product.ProductName+ " - " + pt.product.ProductFamily.Name;
+
+            return View(pt);
+        }
+
+        public ActionResult EditLine(int id )
+        {
+            Feature_Product fp = Feature_Product.FindById(id);
+            ViewData["UserPermission"] = UserPermission.ForUser();
+
+            ProductTemplateListViewModel viewModel = new ProductTemplateListViewModel(new Feature_Product[] { fp });
+            ViewBag.IPCGroups = viewModel.IPCGroups;
+            ViewBag.Attributes = viewModel.Attributes;
+
+            return PartialView(viewModel);
+        }
+
+        public ActionResult UpdateLine(ProductTemplateLineDTO line)
+        {
+            try
+            {
+                if (UserPermission.ForUser().HasApproveGlobalAttributes)
+                {
+                    ProductTemplateListViewModel.UpdateLine(line);
+                    if (line.IsApproved == true)
+                        return ApproveLine(line.ID);
+                }
+                else
+                    ProductTemplateListViewModel.UpdateLine(line);
+
+                return Json(new { hasErrors = false, message = "Success" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { hasErrors = true, errormessage = ex.Message + " " });
+            }
+        }
+
+
+        public ActionResult AddFeature(int ProductId, int[] FeatureIds)
+        {
+            foreach (int id in FeatureIds)
+            {
+                Feature_Product fp = Feature_Product.FindByProductId(ProductId, id);
+                if (fp == null)
+                {
+                    fp = new Feature_Product();
+                    Feature f = Feature.FindById(id); 
+                    fp.FeatureId = id;
+                    fp.ProductId = ProductId;
+                    fp.Feature = f;
+                    WebContext.Current.Feature_Products.Add(fp);
+                }
+                fp.IsActive = true;               
+            }
+            TempData["Message"] = "Feature(s) added to template";
+            
+            WebContext.Current.SaveChanges();
+            return null;            
+        }
+
+        public ActionResult RemoveFeature(int FeatureProductId)
+        {
+            Feature_Product fp = Feature_Product.FindById(FeatureProductId);
+            fp.IsActive = false;
+
+            TempData["Message"] = "Feature(s) removed from template";
+
+            WebContext.Current.SaveChanges();
+            return null;
+        }
+
+        public ActionResult SaveChangeLog(ChangeLog cl)
+        {
+            if (cl.ID == -1)
+            {
+                WebContext.Current.ChangeLogs.Add(cl);
+            }
+            else
+            {
+                ChangeLog updateCL = ChangeLog.FindById(cl.ID);
+                updateCL.LogId = cl.LogId;
+                updateCL.ChangeId = cl.ChangeId;
+                updateCL.DateOfChange = cl.DateOfChange;
+                updateCL.Change = cl.Change;
+                updateCL.RequestedBy = cl.RequestedBy;
+                updateCL.CreatedBy = cl.CreatedBy;
+                updateCL.IsResolved = cl.IsResolved;
+                updateCL.FeatureProductId = cl.FeatureProductId;                
+            }
+            
+            WebContext.Current.SaveChanges();
+            return null;
+        }
+
+        public ActionResult ApproveLine(int id)
+        {
+            bool isValid = true;
+            string message = string.Empty;
+            Feature_Product fp = Feature_Product.FindById(id);
+            //check for U values
+            int regionCount = 0;
+            try
+            {
+                foreach (Feature_Product_Region fpr in fp.Template_Regions)
+                {
+                    regionCount++;
+                    if (fpr.RegionValue == RegionValue.Unknown && fp.IsActive == true && fp.IsDeleted == false && fpr.EURegion.IsDeleted == false)
+                    {
+                        isValid = false;
+                        message += string.Format("{0} is Unknown <BR>", fpr.EURegion.Name);
+                    }
+                }
+                if (regionCount == 0) // Make sure Marketing Regions have been saved
+                {
+                    isValid = false;
+                    message += string.Format("Marketing Regions are required");
+                }
+
+
+                //check for sbom rules
+                foreach (Feature_Product_Plant fpp in fp.Template_Plants)
+                {
+                    if (fpp.IsAvailable)
+                    {
+                        string plantName = fpp.Plant != null ? fpp.Plant.Name : "";
+                        if ((fpp.SBOM_Material == MaterialValue.PartNumber || fpp.SBOM_Material == MaterialValue.InstalledLocally) )
+                        {
+                            // Make sure a Part Number was specified if PartNumber was selected
+                            if (string.IsNullOrEmpty(fpp.MaterialPartNumber))
+                            {
+                                isValid = false;
+                                message += string.Format("{0}: Part number or material number cannot be blank <br/>", plantName);
+                            }
+                            // Make sure a quantity was selected if Part Number was selected
+                            if (fpp.SBOM_Qty < 1)
+                            {
+                                isValid = false;
+                                message += string.Format("{0}: Part quantity must be 1 or larger <br/>", plantName);
+                            }
+                        }
+                        if (fpp.SBOM_Material == MaterialValue.Table && fpp.MaterialTableId == 0)
+                        {
+                            isValid = false;
+                            message += string.Format("{0}: Manufacturing table cannot be blank <br/>", plantName);
+                        }
+                        if ((fpp.SBOM_Material == MaterialValue.PartNumber || fpp.SBOM_Material == MaterialValue.InstalledLocally || fpp.SBOM_Material == MaterialValue.Table) && fpp.SBOM_Qty == 0)
+                        {
+                            isValid = false;
+                            message += string.Format("{0}: Qty cannot be blank <br/>", plantName);
+                        }
+                    }
+                }
+                //check for change logs
+                foreach (ChangeLog cl in fp.ChangeLogs)
+                {
+                    if (cl.IsResolved != true)
+                    {
+                        isValid = false;
+                        message += string.Format("{0}: Change Log needs to be resolved <br/>", cl.ChangeId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { hasErrors = true, errormessage = ex.Message + " " +message });
+            }
+
+            if (isValid)
+            {
+                fp.IsApproved = true;
+                WebContext.Current.SaveChanges();
+                TempData["Message"] = "Approved";
+                return Json(new { hasErrors = false, message = "Success" });
+            }
+            else
+            {
+                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                return Json(new { hasErrors = true, errormessage = message });
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">ProductId</param>
+        /// <returns></returns>
+        public ActionResult ToggleLock(int id)
+        {
+            Product p = Product.FindById(id);
+            if (!p.IsLocked)
+            {
+                if (!p.IsValidToLock())
+                {
+                    TempData["Message"] = "Some items are still pending approval";
+                    return RedirectToAction("Details/"+p.ID);
+                }
+            }
+
+            p.IsLocked = !p.IsLocked;
+            WebContext.Current.SaveChanges();
+            TempData["Message"] = "Product Lock Status Changed";
+            return RedirectToAction("Details/"+p.ID);
+        }
+
+
+        public ActionResult Export(int id = 0)
+        {
+            if (TempData["Message"] != null)
+                ViewBag.Message = TempData["Message"];
+
+            ViewData["UserPermission"] = UserPermission.ForUser();
+
+            ProductTemplateListViewModel pt = new ProductTemplateListViewModel(id);
+            if (pt == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Title = pt.product.ProductName + " - " + pt.product.ProductFamily.Name;
+
+            return View(pt);
+        }
+
+    }
+}
