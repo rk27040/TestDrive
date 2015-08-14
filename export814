@@ -1,0 +1,2062 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Tennant.GlobalAttributes.Web.Models;
+using Tennant.GlobalAttributes.Web.ViewModels;
+
+namespace Tennant.GlobalAttributes.Web.Utils
+{
+    public class Export
+    {
+
+        //public void SaveWorkbook(ProductTemplateListViewModel productTemplate)
+        #region "GlobalAttributes Export"
+
+        public MemoryStream ExportGlobalAttributes()
+
+        {
+
+            MemoryStream stream = new MemoryStream();
+            SpreadsheetDocument spreadsheetDocument;
+
+            try
+            {
+                spreadsheetDocument = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
+
+
+                WorkbookPart workbookPart;
+
+                //Instantiates workbookpart
+                workbookPart = spreadsheetDocument.AddWorkbookPart(); //If file is new file
+
+                var worksheetStylePart = workbookPart.AddNewPart<WorkbookStylesPart>();
+
+                //Add styles to sheet
+                worksheetStylePart.Stylesheet = GenerateStyleSheet();
+                worksheetStylePart.Stylesheet.Save();
+
+                //Creates Workbook if workbook not existed(For New Excel File), Existing excel file this is not necessary
+                if (workbookPart.Workbook == null)
+                    workbookPart.Workbook = new Workbook();
+
+                Sheets sheets;
+
+                sheets = workbookPart.Workbook.AppendChild(new Sheets()); 
+
+                FileVersion fileVersion = new FileVersion { ApplicationName = "Microsoft Office Excel" };
+               
+
+                uint tableIndex = 0;
+
+                //converting the sheets collection to a list of <Sheet>
+                List<Sheet> sheetsList = workbookPart.Workbook.Descendants<Sheet>().ToList();
+
+                
+                //GlobalAttributes sheet
+                tableIndex = CreateGlobalAttributesSheet(workbookPart, sheets, tableIndex, sheetsList);
+               
+
+              
+                //Saving the complete workbook to disk
+                spreadsheetDocument.WorkbookPart.Workbook.Save();
+
+                spreadsheetDocument.Close();
+
+
+                return stream;
+
+            }
+
+            catch (Exception)
+            {
+                // spreadsheetDocument.Close();
+                throw;
+
+            }
+        }
+
+        private uint CreateGlobalAttributesSheet(WorkbookPart workbookPart, Sheets sheets, uint tableIndex, List<Sheet> sheetsList)
+        {
+            //bool hasSheetExists = false;
+            int sheetIndex = 0;
+            string relId = "";
+            Sheet sheet;
+
+            WorksheetPart worksheetPart;
+
+
+            worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            relId = workbookPart.GetIdOfPart(worksheetPart);
+            sheet = new Sheet { Name = "Global Attributes", SheetId = tableIndex + 1, Id = relId };
+
+            SheetData sheetData = new SheetData();
+
+            Worksheet workSheet = worksheetPart.Worksheet;
+
+            int lastRowIndex = 0;
+
+            if (workSheet != null)
+            {
+                //Retrieving existing sheet data from the worksheet
+                sheetData = workSheet.GetFirstChild<SheetData>();
+
+                //Getting all existing record rows.
+                IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                //Considering the last row index as total row count. append the records to the last index onwards.
+                lastRowIndex = rows.Count();
+            }
+            else //Creating new worksheet
+            {
+                workSheet = new Worksheet(sheetData);
+                worksheetPart.Worksheet = workSheet;
+            }
+
+            //Creating columns..(INDX = 1 , Header)
+            List<string> headerList = new List<string>();
+            GlobalAttributeListViewModel gaViewModel = new GlobalAttributeListViewModel();
+            //header starts
+            Row headerRow = CreateGlobalAttributesContentHeader(headerList, 1, productTemplate);
+            
+            // Row headerRow = CreateContentHeader(1, inputDataTable.Columns);
+            sheetData.Append(headerRow);
+            //header ends
+            lastRowIndex = 1;
+
+            //Last Row index
+            lastRowIndex++;
+
+            //Worksheet Data Row Number.. (INDX = 2 onwards data)
+            uint currDataRowIndex = (uint)lastRowIndex; //From this index on data will get appended.
+
+            //Creating Row Data
+            foreach (ProductTemplateLineDTO templateLine in productTemplate.ProductTemplateLine)
+            {
+                int iterRowIndex = 0;
+
+                //Creating insertble row for the openxml.
+                Row contentRow = CreateVCModelContentRow(headerList, currDataRowIndex, templateLine);
+                currDataRowIndex++;
+
+                //Appending to sheet data
+                sheetData.AppendChild(contentRow);
+            }
+
+
+            //new Worksheet(sheetData);
+
+            //Saving worksheet contents
+            worksheetPart.Worksheet.Save();
+
+            sheets.AppendChild(sheet);
+
+            tableIndex++;
+            return tableIndex;
+        }
+
+        private Row CreateGlobalAttributesContentRow(List<string> headerList, UInt32 rowDataIndex, ProductTemplateLineDTO templateLine)
+        {
+            string tempHolder = string.Empty;
+            Row resultRow = new Row { RowIndex = rowDataIndex };
+            int i = 0;
+
+
+            Cell cell1 = CreateContentCell(headerList[i], rowDataIndex, (templateLine.IsApproved) ? "approved" : "Pending");
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.IPCGroupingName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.AttributeCharacteristicName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.AttributeName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.FeatureCharacteristicName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.FeatureName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.MarketingRuleName);
+            resultRow.Append(cell1);
+            i++;
+
+            if (templateLine.Internal.HasValue)
+            {
+                tempHolder = (bool)(templateLine.Internal) ? "Y" : "-";
+            }
+            else
+            {
+                tempHolder = "-";
+            }
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, tempHolder);
+            resultRow.Append(cell1);
+            i++;
+
+            foreach (var region in templateLine.MarketingRegionValues)
+            {
+                string regionVal = string.Empty;
+                if (region.RegionValue == RegionValue.Unknown)
+                {
+                    regionVal = "U";
+                }
+                else
+                {
+                    regionVal = region.RegionValue.ToString();
+                }
+                UInt32 styleCode = GetContentStyleCodeByCountry(region.EURegion.ShortCode.ToLower());
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, regionVal, styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+            }
+            //cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.AttachmentRateReporting);
+            //resultRow.Append(cell1);
+            //i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.AttachmentRateReporting));
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.AttachmentRateInconsistency));
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.Profitability));
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.ProfitabilityInconsistency));
+            resultRow.Append(cell1);
+            i++;
+
+            foreach (Feature_Product_Plant plant in templateLine.PlantValues)
+            {
+                UInt32 styleCode = GetContentStyleCodeByCountry(plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower());
+
+                //string sbomMaterial = plant.SBOM_Material.ToString() + "  ";
+                string sbomMaterial = string.Empty;
+                if (plant.MaterialTableId != 0 && templateLine.ManufacturingRules.Where(m => m.ID == plant.MaterialTableId).FirstOrDefault() != null)
+                {
+                    sbomMaterial += " " + templateLine.ManufacturingRules.Where(m => m.ID == plant.MaterialTableId).FirstOrDefault().Name;
+                }
+                sbomMaterial += plant.MaterialPartNumber;
+
+                if (string.IsNullOrEmpty(sbomMaterial.Trim()))
+                {
+                    sbomMaterial = "U";
+                }
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, sbomMaterial, styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Qty.ToString() : "NA", styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Rules : "NA", styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Pick : "NA", styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Special : "NA", styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Cost : "NA", styleCode);
+                resultRow.Append(cell1);
+                i++;
+            }
+
+            return resultRow;
+
+        }
+
+        private Row CreateGlobalAttributesContentHeader(List<string> headerList, UInt32 rowDataIndex, ProductTemplateListViewModel productTemplate)
+        {
+            Row resultRow = new Row { RowIndex = rowDataIndex };
+            List<string> mylist = new List<string>();
+            string colRef = GetExcelColumnName(headerList.Count + 1);
+            Cell cell1 = CreateHeaderCell(colRef, rowDataIndex, "Approval");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "IPC Group");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attribute Code");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attribute Description");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Feature Code");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Feature Description");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Marketing Rules");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Internal");
+            headerList.Add("Internal");
+            resultRow.Append(cell1);
+
+            foreach (var region in productTemplate.Regions)
+            {
+                UInt32 styleCode = GetHeaderStyleCodeByCountry(region.ShortCode.ToLower());
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, region.Name, styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+            }
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attachment Rate");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attachment Rate Inconsistency");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Profitability");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Profitability Inconsistency");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            foreach (var plant in productTemplate.Plants)
+            {
+                UInt32 styleCode = GetHeaderStyleCodeByCountry(plant.EU_Regions.FirstOrDefault().ShortCode.ToLower());
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Material", styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Qty", styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Rules", styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Pick", styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Special", styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Cost", styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+            }
+
+            //cell1 = CreateHeaderCell("Change Log", rowDataIndex, "Change Log");
+            //headerList.Add("Change Log");
+            //resultRow.Append(cell1);
+
+
+
+            return resultRow;
+        }
+
+
+        #endregion 
+       
+
+        public MemoryStream SaveWorkbook(int productId, bool vcTemplate, bool market, bool manufacturing, out string productName)
+        {
+            ProductTemplateListViewModel productTemplate = new ProductTemplateListViewModel(productId);
+            productName = productTemplate.product.ProductName + " - " + productTemplate.product.ProductFamily.Name;
+            MemoryStream stream = new MemoryStream();
+            SpreadsheetDocument spreadsheetDocument;
+            bool isNewFile = true;
+            try
+            {
+                spreadsheetDocument = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook); //Create
+
+                if (true)//using (spreadsheetDocument)
+                {
+
+                    WorkbookPart workbookPart;
+
+                    //Instantiates workbookpart
+                    workbookPart = spreadsheetDocument.AddWorkbookPart(); //If file is new file
+
+                    var worksheetStylePart = workbookPart.AddNewPart<WorkbookStylesPart>();
+
+                    //Add styles to sheet
+                    worksheetStylePart.Stylesheet = GenerateStyleSheet();
+                    worksheetStylePart.Stylesheet.Save();
+
+                    //Creates Workbook if workbook not existed(For New Excel File), Existing excel file this is not necessary
+                    if (workbookPart.Workbook == null)
+                        workbookPart.Workbook = new Workbook();
+
+                    Sheets sheets;
+
+                    //
+                    if (isNewFile)
+                        sheets = workbookPart.Workbook.AppendChild(new Sheets()); //Adding new sheets to the file, if new file
+                    else
+                        sheets = workbookPart.Workbook.Sheets; //Retrieving existing sheets from the file
+
+                    FileVersion fileVersion = new FileVersion { ApplicationName = "Microsoft Office Excel" };
+                    //  workbook.Append(fileVersion);
+
+                    uint tableIndex = 0;
+
+                    //converting the sheets collection to a list of <Sheet>
+                    List<Sheet> sheetsList = workbookPart.Workbook.Descendants<Sheet>().ToList();
+
+                    if (vcTemplate)
+                    {
+                        //VC model sheet
+                        tableIndex = CreateVCModelSheet(workbookPart, sheets, tableIndex, sheetsList, productTemplate);
+                    }
+
+                    if (market)
+                    {
+                        //Marketing sheet
+                        MarketingRuleViewModel marketingRuleViewModel = new MarketingRuleViewModel(productId);
+
+                        tableIndex = CreateMarketingRuleSheet(workbookPart, sheets, tableIndex, sheetsList, marketingRuleViewModel.MarketingRules);
+                    }
+
+                    if (manufacturing)
+                    {
+                        //Manufacturing sheet
+                        ManufacturingRuleViewModel manufacturingRuleViewModel = new ManufacturingRuleViewModel(productId);
+                    
+                    tableIndex = CreateManufacturingRuleSheet(workbookPart, sheets, tableIndex, sheetsList, manufacturingRuleViewModel.ManufacturingRules);
+                    }
+                    //Saving the complete workbook to disk
+                    spreadsheetDocument.WorkbookPart.Workbook.Save();
+
+                    spreadsheetDocument.Close();
+
+                }
+
+                return stream;
+
+            }
+
+            catch (Exception)
+            {
+                // spreadsheetDocument.Close();
+                throw;
+
+            }
+
+        }
+
+        private uint CreateVCModelSheet(WorkbookPart workbookPart, Sheets sheets, uint tableIndex, List<Sheet> sheetsList, ProductTemplateListViewModel productTemplate)
+        {
+            //bool hasSheetExists = false;
+            int sheetIndex = 0;
+            string relId = "";
+            Sheet sheet;
+
+            WorksheetPart worksheetPart;
+
+
+            worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            relId = workbookPart.GetIdOfPart(worksheetPart);
+            sheet = new Sheet { Name = "VC Template", SheetId = tableIndex + 1, Id = relId };
+
+            SheetData sheetData = new SheetData();
+
+            Worksheet workSheet = worksheetPart.Worksheet;
+
+            int lastRowIndex = 0;
+
+            if (workSheet != null)
+            {
+                //Retrieving existing sheet data from the worksheet
+                sheetData = workSheet.GetFirstChild<SheetData>();
+
+                //Getting all existing record rows.
+                IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                //Considering the last row index as total row count. append the records to the last index onwards.
+                lastRowIndex = rows.Count();
+            }
+            else //Creating new worksheet
+            {
+                workSheet = new Worksheet(sheetData);
+                worksheetPart.Worksheet = workSheet;
+            }
+
+            //Creating columns..(INDX = 1 , Header)
+            List<string> headerList = new List<string>();
+            Row headerRow = CreateVCModelContentHeader(headerList, 1, productTemplate);
+            // Row headerRow = CreateContentHeader(1, inputDataTable.Columns);
+            sheetData.Append(headerRow);
+            lastRowIndex = 1;
+
+            //Last Row index
+            lastRowIndex++;
+
+            //Worksheet Data Row Number.. (INDX = 2 onwards data)
+            uint currDataRowIndex = (uint)lastRowIndex; //From this index on data will get appended.
+
+            //Creating Row Data
+            foreach (ProductTemplateLineDTO templateLine in productTemplate.ProductTemplateLine)
+            {
+                int iterRowIndex = 0;
+
+                //Creating insertble row for the openxml.
+                Row contentRow = CreateVCModelContentRow(headerList, currDataRowIndex, templateLine);
+                currDataRowIndex++;
+
+                //Appending to sheet data
+                sheetData.AppendChild(contentRow);
+            }
+
+
+            //new Worksheet(sheetData);
+
+            //Saving worksheet contents
+            worksheetPart.Worksheet.Save();
+
+            sheets.AppendChild(sheet);
+
+            tableIndex++;
+            return tableIndex;
+        }
+
+        private Row CreateVCModelContentRow(List<string> headerList, UInt32 rowDataIndex, ProductTemplateLineDTO templateLine)
+        {
+            string tempHolder = string.Empty;
+            Row resultRow = new Row { RowIndex = rowDataIndex };
+            int i = 0;
+
+
+            Cell cell1 = CreateContentCell(headerList[i], rowDataIndex, (templateLine.IsApproved) ? "approved" : "Pending");
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.IPCGroupingName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.AttributeCharacteristicName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.AttributeName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.FeatureCharacteristicName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.FeatureName);
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.MarketingRuleName);
+            resultRow.Append(cell1);
+            i++;
+
+            if (templateLine.Internal.HasValue)
+            {
+                tempHolder = (bool)(templateLine.Internal) ? "Y" : "-";
+            }
+            else
+            {
+                tempHolder = "-";
+            }
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, tempHolder);
+            resultRow.Append(cell1);
+            i++;
+
+            foreach (var region in templateLine.MarketingRegionValues)
+            {
+                string regionVal = string.Empty;
+                if (region.RegionValue == RegionValue.Unknown)
+                {
+                    regionVal = "U";
+                }
+                else
+                {
+                    regionVal = region.RegionValue.ToString();
+                }
+                UInt32 styleCode = GetContentStyleCodeByCountry(region.EURegion.ShortCode.ToLower());
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, regionVal,styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+            }
+            //cell1 = CreateContentCell(headerList[i], rowDataIndex, templateLine.AttachmentRateReporting);
+            //resultRow.Append(cell1);
+            //i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.AttachmentRateReporting));
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.AttachmentRateInconsistency));
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.Profitability));
+            resultRow.Append(cell1);
+            i++;
+
+            cell1 = CreateContentCell(headerList[i], rowDataIndex, GetDisplayValue(templateLine.ProfitabilityInconsistency));
+            resultRow.Append(cell1);
+            i++;
+
+            foreach (Feature_Product_Plant plant in templateLine.PlantValues)
+            {
+                UInt32 styleCode = GetContentStyleCodeByCountry(plant.Plant.EU_Regions.FirstOrDefault().ShortCode.ToLower());
+
+                //string sbomMaterial = plant.SBOM_Material.ToString() + "  ";
+                string sbomMaterial = string.Empty;
+                if (plant.MaterialTableId != 0 && templateLine.ManufacturingRules.Where(m => m.ID == plant.MaterialTableId).FirstOrDefault() != null)
+                        {
+                           sbomMaterial += " " +  templateLine.ManufacturingRules.Where(m => m.ID == plant.MaterialTableId).FirstOrDefault().Name;
+                        }
+                sbomMaterial += plant.MaterialPartNumber;
+
+                if (string.IsNullOrEmpty(sbomMaterial.Trim()))
+                {
+                    sbomMaterial = "U";
+                }
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, sbomMaterial,styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Qty.ToString() : "NA",styleCode );
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Rules : "NA",styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable ? plant.SBOM_Pick : "NA",styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable? plant.SBOM_Special : "NA",styleCode);
+                resultRow.Append(cell1);
+                i++;
+
+                cell1 = CreateContentCell(headerList[i], rowDataIndex, plant.IsAvailable? plant.SBOM_Cost : "NA",styleCode);
+                resultRow.Append(cell1);
+                i++;
+            }
+
+            return resultRow;
+
+        }
+
+        private Row CreateVCModelContentHeader(List<string> headerList, UInt32 rowDataIndex, ProductTemplateListViewModel productTemplate)
+        {
+            Row resultRow = new Row { RowIndex = rowDataIndex };
+            List<string> mylist = new List<string>();
+            string colRef = GetExcelColumnName(headerList.Count + 1);
+            Cell cell1 = CreateHeaderCell(colRef, rowDataIndex, "Approval");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "IPC Group");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attribute Code");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attribute Description");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Feature Code");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Feature Description");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Marketing Rules");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Internal");
+            headerList.Add("Internal");
+            resultRow.Append(cell1);
+
+            foreach (var region in productTemplate.Regions)
+            {
+                UInt32 styleCode = GetHeaderStyleCodeByCountry(region.ShortCode.ToLower());
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, region.Name, styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+            }
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attachment Rate");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Attachment Rate Inconsistency");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Profitability");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            colRef = GetExcelColumnName(headerList.Count + 1);
+            cell1 = CreateHeaderCell(colRef, rowDataIndex, "Profitability Inconsistency");
+            headerList.Add(colRef);
+            resultRow.Append(cell1);
+
+            foreach (var plant in productTemplate.Plants)
+            {
+                UInt32 styleCode = GetHeaderStyleCodeByCountry(plant.EU_Regions.FirstOrDefault().ShortCode.ToLower());
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Material",styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Qty",styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Rules",styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Pick",styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Special",styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                cell1 = CreateHeaderCell(colRef, rowDataIndex, plant.Name + " SBOM Cost",styleCode);
+                headerList.Add(colRef);
+                resultRow.Append(cell1);
+
+            }
+
+            //cell1 = CreateHeaderCell("Change Log", rowDataIndex, "Change Log");
+            //headerList.Add("Change Log");
+            //resultRow.Append(cell1);
+
+
+
+            return resultRow;
+        }
+
+        private uint CreateManufacturingRuleSheet(WorkbookPart workbookPart, Sheets sheets, uint tableIndex, List<Sheet> sheetsList, ManufacturingRule[] manufacturingRules)
+        {
+            //bool hasSheetExists = false;
+            int sheetIndex = 0;
+            string relId = "";
+            Sheet sheet;
+
+            WorksheetPart worksheetPart;
+
+
+            worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+
+            //var worksheet1 = new Worksheet();
+            //var worksheetStylePart = workbookPart.AddNewPart<WorkbookStylesPart>();
+
+            ////Add styles to sheet
+            //worksheetStylePart.Stylesheet = GenerateStyleSheet();
+            //worksheetStylePart.Stylesheet.Save();
+
+            relId = workbookPart.GetIdOfPart(worksheetPart);
+            sheet = new Sheet { Name = "Manufacturing Rules", SheetId = tableIndex + 1, Id = relId };
+
+            SheetData sheetData = new SheetData();
+
+            Worksheet workSheet = worksheetPart.Worksheet;
+
+            int lastRowIndex = 0;
+
+            if (workSheet != null)
+            {
+                //Retrieving existing sheet data from the worksheet
+                sheetData = workSheet.GetFirstChild<SheetData>();
+
+                //Getting all existing record rows.
+                IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                //Considering the last row index as total row count. append the records to the last index onwards.
+                lastRowIndex = rows.Count();
+            }
+            else //Creating new worksheet
+            {
+                workSheet = new Worksheet(sheetData);
+                worksheetPart.Worksheet = workSheet;
+            }
+            UInt32 rowDataIndex = 1;
+            //Get all the marketing rules
+            foreach (Tennant.GlobalAttributes.Web.Models.ManufacturingRule rule in manufacturingRules)
+            {
+                UInt32 mergeRowNo = rowDataIndex; 
+                ManufacturingRule manufacturingRule = ManufacturingRule.FindById(rule.ID);
+                rowDataIndex = CreateManufacturingRuleContent(sheetData, rowDataIndex, manufacturingRule);
+                
+                //merge start
+                MergeCells mergeCells;
+
+                if (workSheet.Elements<MergeCells>().Count() > 0)
+                    mergeCells = workSheet.Elements<MergeCells>().First();
+                else
+                {
+                    mergeCells = new MergeCells();
+
+                    // Insert a MergeCells object into the specified position.
+                    if (workSheet.Elements<CustomSheetView>().Count() > 0)
+                        workSheet.InsertAfter(mergeCells, workSheet.Elements<CustomSheetView>().First());
+                    else
+                        workSheet.InsertAfter(mergeCells, workSheet.Elements<SheetData>().First());
+                }
+                //var row = sheetData.Elements<Row>().Last(r => r.RowIndex.Value == rowDataIndex).First();
+                int cellCount = sheetData.Elements<Row>().Last().Elements<Cell>().Count();
+                string refValue = string.Format("A{0}:{1}{2}", mergeRowNo.ToString(), GetCellAddress(cellCount), mergeRowNo.ToString());
+
+                // row.Elements<Cell>().Last().CellReference
+                // Create the merged cell and append it to the MergeCells collection.
+                MergeCell mergeCell = new MergeCell()
+                {
+                    Reference =
+                        new StringValue(refValue)
+                };
+                mergeCells.Append(mergeCell);
+                workSheet.Save();
+
+                //merge end
+            rowDataIndex = rowDataIndex+3;
+
+            }
+
+            //Saving worksheet contents
+            worksheetPart.Worksheet.Save();
+
+            sheets.AppendChild(sheet);
+
+            tableIndex++;
+            return tableIndex;
+        }
+
+        private UInt32 CreateManufacturingRuleContent(SheetData sheetData, UInt32 rowDataIndex, ManufacturingRule manufacturingRule)
+        {
+            List<string> headerList = new List<string>();
+            //table header
+            Row tableHeaderRow = new Row { RowIndex = rowDataIndex };
+            Cell tableHeaderCell = CreateHeaderCell(manufacturingRule.Name, rowDataIndex, manufacturingRule.Name, 20);
+            tableHeaderRow.Append(tableHeaderCell);
+            sheetData.AppendChild(tableHeaderRow);
+            rowDataIndex++;
+
+            //header rows
+            Row headerRow = new Row { RowIndex = rowDataIndex };
+           
+            List<string> mylist = new List<string>();
+            Cell headerCell;
+            string colHeader = string.Empty;
+            string colRef = string.Empty;
+            for (int x = 0; x <= manufacturingRule.FeatureCells.GetUpperBound(0); x++)
+            {
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                colHeader = manufacturingRule.FeatureCells[x, 0].AttributeCharacteristicName;
+                headerCell = CreateHeaderCell(colRef, rowDataIndex, colHeader);
+                headerList.Add(colHeader);
+                headerRow.Append(headerCell);
+
+                colHeader = manufacturingRule.FeatureCells[x, 0].AttributeName;
+                headerCell = CreateHeaderCell(colRef, rowDataIndex, colHeader);
+                headerList.Add(colHeader);
+                headerRow.Append(headerCell);
+            }
+
+            for (int x=0; x<=manufacturingRule.PlantCells.GetUpperBound(0); x++)
+            {
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                colHeader = manufacturingRule.PlantCells[x,0].PlantName+ " ";
+               // colHeader = "COLNAME" + x.ToString(); 
+                headerCell = CreateHeaderCell(colRef, rowDataIndex, colHeader);
+                headerList.Add(colHeader);
+                headerRow.Append(headerCell);
+            }
+            sheetData.AppendChild(headerRow);
+            rowDataIndex++;
+            //detail rows
+            for (int y = 0; y <= manufacturingRule.FeatureCells.GetUpperBound(1); y++)
+            {
+                Row resultRow = new Row { RowIndex = rowDataIndex };
+                int col = 0;
+                for (int x = 0; x <= manufacturingRule.FeatureCells.GetUpperBound(0); x++)
+                {
+                    Cell cell1 = CreateContentCell(headerList[col], rowDataIndex, manufacturingRule.FeatureCells[x, y].FeatureCharacteristicName);
+                    resultRow.Append(cell1);
+                    col++;
+
+                    cell1 = CreateContentCell(headerList[col], rowDataIndex, manufacturingRule.FeatureCells[x, y].FeatureName);
+                    resultRow.Append(cell1);
+                    col++;
+                }
+                for (int x = 0; x <= manufacturingRule.PlantCells.GetUpperBound(0); x++)
+                {
+                    Cell cell1 = CreateContentCell(headerList[col], rowDataIndex, manufacturingRule.PlantCells[x, y].Value);
+                   // Cell cell1 = CreateContentCell(headerList[col], rowDataIndex, "ABC");
+                    resultRow.Append(cell1);
+                    col++;
+                }
+                sheetData.AppendChild(resultRow);
+                rowDataIndex++;
+            }
+            return rowDataIndex+3;
+        }
+
+        private uint CreateMarketingRuleSheet(WorkbookPart workbookPart, Sheets sheets, uint tableIndex, List<Sheet> sheetsList, MarketingRule[] marketingRules)
+        {
+            //bool hasSheetExists = false;
+            int sheetIndex = 0;
+            string relId = "";
+            Sheet sheet;
+
+            WorksheetPart worksheetPart;
+
+
+            worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            relId = workbookPart.GetIdOfPart(worksheetPart);
+            sheet = new Sheet { Name = "Marketing Rules", SheetId = tableIndex + 1, Id = relId };
+
+            SheetData sheetData = new SheetData();
+
+            Worksheet workSheet = worksheetPart.Worksheet;
+
+            int lastRowIndex = 0;
+
+            if (workSheet != null)
+            {
+                //Retrieving existing sheet data from the worksheet
+                sheetData = workSheet.GetFirstChild<SheetData>();
+
+                //Getting all existing record rows.
+                IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                //Considering the last row index as total row count. append the records to the last index onwards.
+                lastRowIndex = rows.Count();
+            }
+            else //Creating new worksheet
+            {
+                workSheet = new Worksheet(sheetData);
+                worksheetPart.Worksheet = workSheet;
+            }
+            UInt32 rowDataIndex = 1;
+            //Get all the marketing rules
+            foreach (Tennant.GlobalAttributes.Web.Models.MarketingRule rule in marketingRules)
+            {
+               UInt32 mergeRowNo = rowDataIndex; 
+               MarketingRule marketingRule = MarketingRule.FindById(rule.ID);
+               rowDataIndex = CreateMarketingRuleContent(sheetData, rowDataIndex, marketingRule);
+                
+               //merge start
+               MergeCells mergeCells;
+
+               if (workSheet.Elements<MergeCells>().Count() > 0)
+                   mergeCells = workSheet.Elements<MergeCells>().First();
+               else
+               {
+                   mergeCells = new MergeCells();
+
+                   // Insert a MergeCells object into the specified position.
+                   if (workSheet.Elements<CustomSheetView>().Count() > 0)
+                       workSheet.InsertAfter(mergeCells, workSheet.Elements<CustomSheetView>().First());
+                   else
+                       workSheet.InsertAfter(mergeCells, workSheet.Elements<SheetData>().First());
+               }
+               //var row = sheetData.Elements<Row>().Last(r => r.RowIndex.Value == rowDataIndex).First();
+               int cellCount = sheetData.Elements<Row>().Last().Elements<Cell>().Count();
+               string refValue = string.Format("A{0}:{1}{2}", mergeRowNo.ToString(), GetCellAddress(cellCount), mergeRowNo.ToString());
+
+              // row.Elements<Cell>().Last().CellReference
+               // Create the merged cell and append it to the MergeCells collection.
+               MergeCell mergeCell = new MergeCell()
+               {
+                   Reference =
+                       new StringValue(refValue)
+               };
+               mergeCells.Append(mergeCell);
+               workSheet.Save();
+               rowDataIndex = rowDataIndex + 3;
+
+                //merge end
+            }
+
+            //Saving worksheet contents
+            worksheetPart.Worksheet.Save();
+
+            sheets.AppendChild(sheet);
+
+            tableIndex++;
+            return tableIndex;
+        }
+
+        private UInt32 CreateMarketingRuleContent(SheetData sheetData, UInt32 rowDataIndex, MarketingRule marketingRule)
+        {
+            List<string> headerList = new List<string>();
+            //table header
+            Row tableHeaderRow = new Row { RowIndex = rowDataIndex };
+            Cell tableHeaderCell = CreateHeaderCell(marketingRule.Name, rowDataIndex, marketingRule.Name, 20);
+            tableHeaderRow.Append(tableHeaderCell);
+            sheetData.AppendChild(tableHeaderRow);
+            rowDataIndex++;
+            //header rows
+            Row headerRow = new Row { RowIndex = rowDataIndex };
+            List<string> mylist = new List<string>();
+            Cell headerCell;
+            string colRef = string.Empty;
+            string colHeader = string.Empty;
+            for (int x = 0; x <= marketingRule.FeatureCells.GetUpperBound(0); x++)
+            {
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                colHeader = marketingRule.FeatureCells[x, 0].AttributeCharacteristicName;
+                //if (!string.IsNullOrEmpty(colHeader))
+                //{
+                headerCell = CreateHeaderCell(colRef, rowDataIndex, colHeader);
+                //}
+                //else
+                //{
+                //    headerCell = CreateHeaderCell("HeaderAttrCol" + x.ToString(), rowDataIndex, "HeaderAttrCol" + x.ToString());
+                //}
+                headerList.Add(colHeader);
+                headerRow.Append(headerCell);
+
+                colHeader = marketingRule.FeatureCells[x, 0].AttributeName;
+                headerCell = CreateHeaderCell(colRef, rowDataIndex, colHeader);
+                headerList.Add(colHeader);
+                headerRow.Append(headerCell);
+
+            }
+
+            for (int x = 0; x <= marketingRule.RegionCells.GetUpperBound(0); x++)
+            {
+                colHeader = marketingRule.RegionCells[x, 0].RegionName;
+                colRef = GetExcelColumnName(headerList.Count + 1);
+                headerCell = CreateHeaderCell(colRef, rowDataIndex, colHeader);
+                headerList.Add(colHeader);
+                headerRow.Append(headerCell);
+            }
+            
+            sheetData.AppendChild(headerRow);
+            rowDataIndex++;
+            //detail rows
+            
+            for (int y = 0; y <= marketingRule.FeatureCells.GetUpperBound(1); y++)
+            {
+               
+                Row resultRow = new Row { RowIndex = rowDataIndex };
+                int col = 0;
+                for (int x = 0; x <= marketingRule.FeatureCells.GetUpperBound(0); x++)
+                {
+                    Cell cell1 = CreateContentCell(headerList[col], rowDataIndex, marketingRule.FeatureCells[x, y].FeatureCharacteristicName);
+                    resultRow.Append(cell1);
+                    col++;
+
+                    cell1 = CreateContentCell(headerList[col], rowDataIndex, marketingRule.FeatureCells[x, y].FeatureName);
+                    resultRow.Append(cell1);
+                    col++;
+                }
+                for (int x = 0; x <= marketingRule.RegionCells.GetUpperBound(0); x++)
+                {
+                    Cell cell1 = CreateContentCell(headerList[col], rowDataIndex, marketingRule.RegionCells[x, y].Value);
+                    resultRow.Append(cell1);
+                    col++;
+                }
+                sheetData.AppendChild(resultRow);
+                rowDataIndex++;
+               
+            }
+
+            return rowDataIndex;
+        }
+
+        //private Row CreateMarketingRuleContentHeader(List<string> headerList, UInt32 rowDataIndex, MarketingRule marketingRule)
+        //{
+        //    Row resultRow = new Row { RowIndex = rowDataIndex };
+
+        //    List<string> mylist = new List<string>();
+        //    Cell cell1;
+        //    string colHeader = string.Empty;
+        //    for (int i = 0; i <= marketingRule.FeatureCells.GetUpperBound(0); i++)
+        //    {
+        //        colHeader = marketingRule.FeatureCells[i, 0].AttributeCharacteristicName;
+        //        cell1 = CreateHeaderCell(colHeader, rowDataIndex, colHeader);
+        //        headerList.Add(colHeader);
+        //        resultRow.Append(cell1);
+        //    }
+
+        //    for (int i = 0; i <= marketingRule.RegionCells.GetUpperBound(0); i++)
+        //    {
+        //        colHeader = marketingRule.RegionCells[x, 0].RegionName;
+        //        cell1 = CreateHeaderCell(colHeader, rowDataIndex, colHeader);
+        //        headerList.Add(colHeader);
+        //        resultRow.Append(cell1);
+        //    }
+
+
+        //    return resultRow;
+        //}
+
+        private uint CreateNewSheet(WorkbookPart workbookPart, Sheets sheets, uint tableIndex, List<Sheet> sheetsList, DataTable inputDataTable)
+        {
+            bool hasSheetExists = false;
+            int sheetIndex = 0;
+            string relId = "";
+            Sheet sheet;
+
+            //Checking sheet exists in the excel file.
+            sheetIndex = sheetsList.FindIndex(c => c.Name == inputDataTable.TableName);
+
+            if (sheetIndex >= 0)
+            {
+                hasSheetExists = true;
+            }
+
+            WorksheetPart worksheetPart;
+
+            if (!hasSheetExists) //If a new sheet
+            {
+
+                worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                relId = workbookPart.GetIdOfPart(worksheetPart);
+                sheet = new Sheet { Name = inputDataTable.TableName, SheetId = tableIndex + 1, Id = relId };
+            }
+            else // if sheet already exists
+            {
+                sheet = sheetsList[sheetIndex];
+
+                List<WorksheetPart> partList = workbookPart.WorksheetParts.ToList();
+
+                // Take the existing the sheet reference from the workbook.
+                WorksheetPart worksheetPart1 = (WorksheetPart)(workbookPart.GetPartById(sheet.Id));
+
+                worksheetPart = worksheetPart1;
+
+                //Retriving RelationID form the workbookPart
+                relId = workbookPart.GetIdOfPart(worksheetPart);
+                // partList.FindAll( c=> c.)
+                // worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+            }
+
+            SheetData sheetData = new SheetData();
+
+            Worksheet workSheet = worksheetPart.Worksheet;
+
+            int lastRowIndex = 0;
+
+            if (workSheet != null)
+            {
+                //Retrieving existing sheet data from the worksheet
+                sheetData = workSheet.GetFirstChild<SheetData>();
+
+                //Getting all existing record rows.
+                IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                //Considering the last row index as total row count. append the records to the last index onwards.
+                lastRowIndex = rows.Count();
+            }
+            else //Creating new worksheet
+            {
+                workSheet = new Worksheet(sheetData);
+                worksheetPart.Worksheet = workSheet;
+            }
+
+            //If Data Table is not empty
+            if (inputDataTable != null && inputDataTable.Rows.Count > 0)
+            {
+                //If Not Sheet already exists(Based on Table Name) -- creating column headers for the excel sheet
+                if (!hasSheetExists || lastRowIndex < 1)
+                {
+                    //Creating columns..(INDX = 1 , Header)
+                    Row headerRow = CreateContentHeader(1, inputDataTable.Columns);
+                    sheetData.Append(headerRow);
+                    lastRowIndex = 1;
+                }
+
+                //Last Row index
+                lastRowIndex++;
+
+                //Worksheet Data Row Number.. (INDX = 2 onwards data)
+                uint currDataRowIndex = (uint)lastRowIndex; //From this index on data will get appended.
+
+                //Creating Row Data
+                for (int iterRowIndex = 0; iterRowIndex < inputDataTable.Rows.Count; iterRowIndex++)
+                {
+                    //Retrieving current DataRow from DataTable
+                    DataRow currentInputRow = inputDataTable.Rows[iterRowIndex];
+
+                    //Creating insertble row for the openxml.
+                    Row contentRow = CreateContentRow(currDataRowIndex, currentInputRow,
+                                                      inputDataTable.Columns);
+                    currDataRowIndex++;
+
+                    //Appending to sheet data
+                    sheetData.AppendChild(contentRow);
+                }
+            }
+
+            //new Worksheet(sheetData);
+
+            //Saving worksheet contents
+            worksheetPart.Worksheet.Save();
+
+            //If sheet new, then appending to sheets collection
+            if (!hasSheetExists)
+                sheets.AppendChild(sheet);
+
+            tableIndex++;
+            return tableIndex;
+        }
+
+        /// <summary>
+        /// Creates the content header.
+        /// </summary>
+        /// <param name="rowDataIndex">Index of the row data.</param>
+        /// <param name="dataColumns">The data columns.</param>
+        /// <returns></returns>
+        private Row CreateContentHeader(UInt32 rowDataIndex, DataColumnCollection dataColumns)
+        {
+            Row resultRow = new Row { RowIndex = rowDataIndex };
+
+            for (int iterColIndex = 0; iterColIndex < dataColumns.Count; iterColIndex++)
+            {
+                Cell cell1 = CreateHeaderCell(dataColumns[iterColIndex].ColumnName, rowDataIndex, dataColumns[iterColIndex].ColumnName);  //CreateTextCell("A", rowDataIndex, Convert.ToString(dataRow[iterColIndex]));
+                resultRow.Append(cell1);
+
+            }
+
+            return resultRow;
+        }
+
+        /// <summary>
+        /// Creates the content row.
+        /// </summary>
+        /// <param name="rowDataIndex">The rowDataIndex.</param>
+        /// <param name="dataRow">DataRow</param>
+        /// <param name="dataColumns">DataColumnCollection</param>
+        /// <returns></returns>
+        private Row CreateContentRow(UInt32 rowDataIndex, DataRow dataRow, DataColumnCollection dataColumns)
+        {
+
+            Row resultRow = new Row { RowIndex = rowDataIndex };
+
+            for (int iterColIndex = 0; iterColIndex < dataColumns.Count; iterColIndex++)
+            {
+                Cell cell1 = CreateContentCell(dataColumns[iterColIndex].ColumnName, rowDataIndex, dataRow[iterColIndex]);  //CreateTextCell("A", rowDataIndex, Convert.ToString(dataRow[iterColIndex]));
+                resultRow.Append(cell1);
+
+            }
+
+            return resultRow;
+
+        }
+
+        /// <summary>
+        /// Creates the content cell.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="index">The rowDataIndex.</param>
+        /// <param name="inputValue">The input value.</param>
+        /// <returns></returns>
+        private Cell CreateContentCell(string header, UInt32 index, object inputValue,UInt32 styleCode=6)
+        {
+            Cell resultCell = null;
+
+            if (inputValue == null)
+            {
+                resultCell = CreateTextCell(header, index, string.Empty,styleCode);
+                return resultCell;
+            }
+            Type objectType = inputValue.GetType();
+
+            TypeCode objectTypeCode;
+
+            bool parseSuccess = Enum.TryParse(objectType.Name, true, out objectTypeCode);
+
+            if (parseSuccess)
+            {
+                switch (objectTypeCode)
+                {
+                    // Number Fields
+                    case TypeCode.UInt64:
+                    case TypeCode.UInt32:
+                    case TypeCode.UInt16:
+                    case TypeCode.Int64:
+                    case TypeCode.Int32:
+                    case TypeCode.Int16:
+                    case TypeCode.Double:
+                    case TypeCode.Decimal:
+                        resultCell = CreateNumberCell(header, index, inputValue,styleCode);
+                        break;
+                    // Date Time Field
+                    case TypeCode.DateTime:
+                        resultCell = CreateDateCell(header, index, inputValue,styleCode);
+                        break;
+                    // Boolean Field
+                    case TypeCode.Boolean:
+                        resultCell = CreateBooleanCell(header, index, inputValue,styleCode);
+                        break;
+
+                    default:
+                        resultCell = CreateTextCell(header, index, inputValue,styleCode);
+                        break;
+                    //case TypeCode.
+                }
+            }
+            else
+                resultCell = CreateTextCell(header, index, inputValue,styleCode);
+            return resultCell;
+        }
+
+        /// <summary>
+        /// Creates the header cell.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
+        private Cell CreateHeaderCell(string header, UInt32 index, object text, UInt32 styleCode=7)
+        {
+            Cell c = new Cell { DataType = CellValues.String, CellReference = header, StyleIndex = styleCode };
+
+            CellValue cellValue = new CellValue
+            {
+                Text = Convert.ToString(text),
+            };
+
+            c.Append(cellValue);
+
+            return c;
+
+        }
+
+        /// <summary>
+        /// Creates the text cell.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="index">The rowDataIndex.</param>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
+        private Cell CreateTextCell(string header, UInt32 index, object text, UInt32 styleCode=6)
+        {
+
+            Cell c = new Cell { DataType = CellValues.InlineString, CellReference = header , StyleIndex = styleCode };
+
+            InlineString istring = new InlineString();
+
+            Text t = new Text { Text = Convert.ToString(text) };
+
+            istring.Append(t);
+
+            c.Append(istring);
+
+            return c;
+
+        }
+
+        /// <summary>
+        /// Creates the number cell.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="index">The rowDataIndex.</param>
+        /// <param name="number">The number.</param>
+        /// <returns></returns>
+        private Cell CreateNumberCell(string header, UInt32 index, object number, UInt32 styleCode=6)
+        {
+
+            Cell c = new Cell
+            {
+                CellReference = header + index,
+                DataType = CellValues.Number,
+                StyleIndex = styleCode
+            };
+
+            CellValue v = new CellValue
+            {
+                Text = Convert.ToString(number),
+                // DataType = CellValues.Number,
+            };
+
+            c.Append(v);
+
+            return c;
+
+        }
+
+        /// <summary>
+        /// Creates the date cell.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="index">The rowDataIndex.</param>
+        /// <param name="number">The date.</param>
+        /// <returns></returns>
+        private Cell CreateDateCell(string header, UInt32 index, object date, UInt32 styleCode=6)
+        {
+
+            Cell c = new Cell
+            {
+                CellReference = header + index,
+                DataType = CellValues.Date,
+                StyleIndex = styleCode
+            };
+
+            CellValue v = new CellValue
+            {
+                Text = Convert.ToString(date),
+                // DataType = CellValues.Number,
+            };
+
+            c.Append(v);
+
+            return c;
+
+        }
+
+        /// <summary>
+        /// Creates the date cell.
+        /// </summary>
+        /// <param name="header">The header.</param>
+        /// <param name="index">The rowDataIndex.</param>
+        /// <param name="number">The date.</param>
+        /// <returns></returns>
+        private Cell CreateBooleanCell(string header, UInt32 index, object boolVal, UInt32 styleCode=6)
+        {
+
+            Cell c = new Cell
+            {
+                CellReference = header + index,
+                DataType = CellValues.Boolean,
+                StyleIndex = styleCode
+            };
+
+            CellValue v = new CellValue
+            {
+                Text = Convert.ToString(boolVal),
+                // DataType = CellValues.Number,
+            };
+
+            c.Append(v);
+
+            return c;
+
+        }
+
+        #region DeleteWorksheet()
+
+        /// <summary>
+        /// Deletes the A work sheet.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="sheetToDelete">The sheet to delete.</param>
+        public void DeleteWorkSheet(string fileName, string sheetToDelete)
+        {
+            string Sheetid = "";
+            //Open the workbook
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(fileName, true))
+            {
+                WorkbookPart wbPart = document.WorkbookPart;
+
+                // Get the pivot Table Parts
+                IEnumerable<PivotTableCacheDefinitionPart> pvtTableCacheParts = wbPart.PivotTableCacheDefinitionParts;
+                Dictionary<PivotTableCacheDefinitionPart, string> pvtTableCacheDefinationPart = new Dictionary<PivotTableCacheDefinitionPart, string>();
+                foreach (PivotTableCacheDefinitionPart Item in pvtTableCacheParts)
+                {
+                    PivotCacheDefinition pvtCacheDef = Item.PivotCacheDefinition;
+                    //Check if this CacheSource is linked to SheetToDelete
+                    var pvtCahce = pvtCacheDef.Descendants<CacheSource>().Where(s => s.WorksheetSource.Sheet == sheetToDelete);
+                    if (pvtCahce.Count() > 0)
+                    {
+
+                        pvtTableCacheDefinationPart.Add(Item, Item.ToString());
+                    }
+                }
+                foreach (var Item in pvtTableCacheDefinationPart)
+                {
+                    wbPart.DeletePart(Item.Key);
+                }
+                //Get the SheetToDelete from workbook.xml
+                Sheet theSheet = wbPart.Workbook.Descendants<Sheet>().Where(s => s.Name == sheetToDelete).FirstOrDefault();
+                if (theSheet == null)
+                {
+                    // The specified sheet doesn't exist.
+                }
+                //Store the SheetID for the reference
+                Sheetid = theSheet.SheetId;
+
+                // Remove the sheet reference from the workbook.
+                WorksheetPart worksheetPart = (WorksheetPart)(wbPart.GetPartById(theSheet.Id));
+                theSheet.Remove();
+
+                // Delete the worksheet part.
+                wbPart.DeletePart(worksheetPart);
+
+                //Get the DefinedNames
+                var definedNames = wbPart.Workbook.Descendants<DefinedNames>().FirstOrDefault();
+                if (definedNames != null)
+                {
+                    foreach (DefinedName Item in definedNames)
+                    {
+                        // This condition checks to delete only those names which are part of Sheet in question
+                        if (Item.Text.Contains(sheetToDelete + "!"))
+                            Item.Remove();
+                    }
+                }
+                // Get the CalculationChainPart
+                //Note: An instance of this part type contains an ordered set of references to all cells in all worksheets in the
+                //workbook whose value is calculated from any formula
+
+                CalculationChainPart calChainPart;
+                calChainPart = wbPart.CalculationChainPart;
+                if (calChainPart != null)
+                {
+                    var calChainEntries = calChainPart.CalculationChain.Descendants<CalculationCell>().Where(c => c.SheetId == Sheetid);
+                    foreach (CalculationCell Item in calChainEntries)
+                    {
+                        Item.Remove();
+                    }
+                    if (calChainPart.CalculationChain.Count() == 0)
+                    {
+                        wbPart.DeletePart(calChainPart);
+                    }
+                }
+
+                // Save the workbook.
+                wbPart.Workbook.Save();
+            }
+        }
+
+        #endregion
+
+        #region  ClearWorkSheetData
+
+        /// <summary>
+        /// Deletes the A work sheet.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="sheetToDelete">The sheet to delete.</param>
+        public void ClearWorkSheetData(string fileName, string sheetToClear)
+        {
+            string Sheetid = "";
+            //Open the workbook
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(fileName, true))
+            {
+                WorkbookPart wbPart = document.WorkbookPart;
+
+                // Get the pivot Table Parts
+                IEnumerable<PivotTableCacheDefinitionPart> pvtTableCacheParts = wbPart.PivotTableCacheDefinitionParts;
+                Dictionary<PivotTableCacheDefinitionPart, string> pvtTableCacheDefinationPart = new Dictionary<PivotTableCacheDefinitionPart, string>();
+                foreach (PivotTableCacheDefinitionPart Item in pvtTableCacheParts)
+                {
+                    PivotCacheDefinition pvtCacheDef = Item.PivotCacheDefinition;
+                    //Check if this CacheSource is linked to SheetToDelete
+                    var pvtCahce = pvtCacheDef.Descendants<CacheSource>().Where(s => s.WorksheetSource.Sheet == sheetToClear);
+                    if (pvtCahce.Count() > 0)
+                    {
+
+                        pvtTableCacheDefinationPart.Add(Item, Item.ToString());
+                    }
+                }
+                foreach (var Item in pvtTableCacheDefinationPart)
+                {
+                    wbPart.DeletePart(Item.Key);
+                }
+                //Get the SheetToDelete from workbook.xml
+                Sheet theSheet = wbPart.Workbook.Descendants<Sheet>().Where(s => s.Name == sheetToClear).FirstOrDefault();
+                if (theSheet == null)
+                {
+                    // The specified sheet doesn't exist.
+                }
+                //Store the SheetID for the reference
+                Sheetid = theSheet.SheetId;
+
+                // Remove the sheet reference from the workbook.
+                WorksheetPart worksheetPart = (WorksheetPart)(wbPart.GetPartById(theSheet.Id));
+
+                Worksheet workSheet = worksheetPart.Worksheet;
+                SheetData sheetData = workSheet.GetFirstChild<SheetData>();
+
+                for (int childIndex = 1; childIndex < sheetData.ChildElements.Count; childIndex++)
+                {
+                    sheetData.RemoveChild(sheetData.ChildElements[childIndex]);
+                }
+
+                IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                List<Row> rowsList = rows.ToList();
+
+                //rowsList.RemoveRange(1, rowsList.Count - 1);
+
+                // Save the workbook.
+                wbPart.Workbook.Save();
+            }
+        }
+
+        #endregion
+
+        #region Create(string fileSavePath, DataSet dataSet)
+
+        /// <summary>
+        /// Saves the specified file save path.
+        /// </summary>
+        /// <param name="fileSavePath">The file save path.</param>
+        /// <param name="dataSet">The data set.</param>
+        public void Create(string fileSavePath, DataSet dataSet)
+        {
+
+            Dictionary<string, List<OpenXmlElement>> inputDictionary = ToSheets(dataSet);
+
+            Create(fileSavePath, inputDictionary);
+            // inputDictionary
+        }
+
+        /// <summary>
+        /// Creates the specified path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="sets">The sets.</param>
+        private void Create(string path, Dictionary<String, List<OpenXmlElement>> sets)
+        {
+            using (SpreadsheetDocument package = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook))
+            {
+                WorkbookPart workbookpart = package.AddWorkbookPart();
+                workbookpart.Workbook = new Workbook();
+
+                Sheets sheets = workbookpart.Workbook.AppendChild(new Sheets());
+
+                foreach (KeyValuePair<String, List<OpenXmlElement>> set in sets)
+                {
+                    WorksheetPart worksheetpart = workbookpart.AddNewPart<WorksheetPart>();
+                    worksheetpart.Worksheet = new Worksheet(new SheetData(set.Value));
+                    worksheetpart.Worksheet.Save();
+
+                    Sheet sheet = new Sheet()
+                    {
+                        Id = workbookpart.GetIdOfPart(worksheetpart),
+                        SheetId = (uint)(sheets.Count() + 1),
+                        Name = set.Key
+                    };
+                    sheets.AppendChild(sheet);
+                }
+                workbookpart.Workbook.Save();
+            }
+        }
+
+        /// <summary>
+        /// Toes the sheets.
+        /// </summary>
+        /// <param name="ds">The ds.</param>
+        /// <returns></returns>
+        private Dictionary<string, List<OpenXmlElement>> ToSheets(DataSet ds)
+        {
+            return
+                (from dt in ds.Tables.OfType<DataTable>()
+                 select new
+                 {
+                     // Sheet Name
+                     Key = dt.TableName,
+                     Value = (
+                         // Sheet Columns
+                     new List<OpenXmlElement>(
+                        new OpenXmlElement[]
+                {
+                    new Row(
+                        from d in dt.Columns.OfType<DataColumn>()
+                        select (OpenXmlElement)new Cell()
+                        {
+                            CellValue = new CellValue(d.ColumnName),
+                            DataType = CellValues.String
+                        })
+                })).Union
+                         // Sheet Rows
+                     ((from dr in dt.Rows.OfType<DataRow>()
+                       select ((OpenXmlElement)new Row(from dc in dr.ItemArray
+                                                       select (OpenXmlElement)new Cell()
+                                                       {
+                                                           CellValue = new CellValue(dc.ToString()),
+                                                           DataType = CellValues.String
+                                                       })))).ToList()
+                 }).ToDictionary(p => p.Key, p => p.Value);
+        }
+
+        #endregion
+
+        #region Read
+
+        /// <summary>
+        /// Reads the specified file save path.
+        /// </summary>
+        /// <param name="fileSavePath">The file save path.</param>
+        /// <returns></returns>
+        public DataSet Read(string fileSavePath)
+        {
+
+            DataSet resultSet = new DataSet();
+
+            using (SpreadsheetDocument spreadSheetDocument = SpreadsheetDocument.Open(fileSavePath, false))
+            {
+
+                WorkbookPart workbookPart = spreadSheetDocument.WorkbookPart;
+                IEnumerable<Sheet> sheets = spreadSheetDocument.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>();
+
+                foreach (Sheet sheet in sheets)
+                {
+                    DataTable dt = new DataTable();
+
+                    string relationshipId = sheet.Id.Value;
+                    string sheetName = sheet.SheetId;
+                    dt.TableName = sheet.SheetId;
+
+                    WorksheetPart worksheetPart =
+                        (WorksheetPart)spreadSheetDocument.WorkbookPart.GetPartById(relationshipId);
+                    Worksheet workSheet = worksheetPart.Worksheet;
+                    SheetData sheetData = workSheet.GetFirstChild<SheetData>();
+                    IEnumerable<Row> rows = sheetData.Descendants<Row>();
+
+                    foreach (Cell cell in rows.ElementAt(0))
+                    {
+                        dt.Columns.Add(GetCellValue(spreadSheetDocument, cell));
+                    }
+
+                    List<Row> rowsList = new List<Row>();
+
+                    rowsList = rows.ToList();
+
+                    //Start from 1, first row is header.
+                    for (int iterRowIndex = 1; iterRowIndex < rowsList.Count; iterRowIndex++) //this will also include your header row...
+                    {
+                        Row row = rowsList[iterRowIndex];
+
+                        DataRow tempRow = dt.NewRow();
+
+                        for (int i = 0; i < row.Descendants<Cell>().Count(); i++)
+                        {
+                            tempRow[i] = GetCellValue(spreadSheetDocument, row.Descendants<Cell>().ElementAt(i));
+                        }
+
+                        dt.Rows.Add(tempRow);
+                    }
+
+                    resultSet.Tables.Add(dt);
+                }
+
+            }
+
+            return resultSet;
+        }
+
+        /// <summary>
+        /// Gets the cell value.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="cell">The cell.</param>
+        /// <returns></returns>
+        public static string GetCellValue(SpreadsheetDocument document, Cell cell)
+        {
+            SharedStringTablePart stringTablePart = document.WorkbookPart.SharedStringTablePart;
+            string value = cell.CellValue != null ? cell.CellValue.InnerXml : string.Empty;
+
+            if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
+            {
+                return stringTablePart.SharedStringTable.ChildElements[Int32.Parse(value)].InnerText;
+            }
+            else
+            {
+                return value;
+            }
+        }
+
+        #endregion
+
+        private string GetDisplayValue(bool? value)
+        {
+            if (value == null) { return "U"; }
+            if (value == true) { return "Y"; } else { return "N"; }
+        }
+
+        private UInt32 GetHeaderStyleCodeByCountry(string code)
+        {
+            switch (code)
+            {
+                case "us":
+                    return 8;
+                case "mx":
+                    return 8;
+                case "au":
+                    return 9;
+                case "eu":
+                    return 10;
+                case "jp":
+                    return 11;
+                case "cn":
+                    return 12;
+                case "ex":
+                    return 13;
+                default:
+                    return 7;
+            }
+        }
+
+        private UInt32 GetContentStyleCodeByCountry(string code)
+        {
+            switch (code)
+            {
+                case "us":
+                    return 14;
+                case "mx":
+                    return 14;
+                case "au":
+                    return 15;
+                case "eu":
+                    return 16;
+                case "jp":
+                    return 17;
+                case "cn":
+                    return 18;
+                case "ex":
+                    return 19;
+                default:
+                    return 7;
+            }
+        }
+
+        static string GetCellAddress(int col)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            do
+            {
+                col--;
+                sb.Insert(0, (char)('A' + (col % 26)));
+                col /= 26;
+            } while (col > 0);
+          
+            return sb.ToString();
+        }
+
+        private static string GetExcelColumnName(int columnNumber)
+        {
+            //Random rnd = new Random();
+            //return rnd.Next(1, 5345345).ToString();
+
+            int dividend = columnNumber;
+            string columnName = String.Empty;
+            int modulo;
+
+            while (dividend > 0)
+            {
+                modulo = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
+                dividend = (int)((dividend - modulo) / 26);
+            }
+
+            return columnName;
+        }
+
+        private static Stylesheet GenerateStyleSheet()
+        {
+            return new Stylesheet(
+
+                new Fonts(
+                    new Font(                                                               // Index 0 - The default font.
+                        new FontSize() { Val = 11 },
+                        new Color() { Rgb = new HexBinaryValue() { Value = "000000" } },
+                        new FontName() { Val = "Calibri" }),
+                    new Font(                                                               // Index 1 - The bold font.
+                        new Bold(),
+                        new FontSize() { Val = 11 },
+                        new Color() { Rgb = new HexBinaryValue() { Value = "000000" } },
+                        new FontName() { Val = "Calibri" }),
+                    new Font(                                                               // Index 2 - The Italic font.
+                        new Italic(),
+                        new FontSize() { Val = 11 },
+                        new Color() { Rgb = new HexBinaryValue() { Value = "000000" } },
+                        new FontName() { Val = "Calibri" }),
+                    new Font(                                                               // Index 3 - The Times Roman font. with 16 size
+                        new FontSize() { Val = 16 },
+                        new Color() { Rgb = new HexBinaryValue() { Value = "000000" } },
+                        new FontName() { Val = "Times New Roman" }),
+                    new Font(                                                               // Index 4 - The Times Roman font. with 16 size bold
+                        new Bold(),
+                        new FontSize() { Val = 16 },
+                        new Color() { Rgb = new HexBinaryValue() { Value = "FAFAFC" } },
+                        new FontName() { Val = "Times New Roman" })
+                ),
+
+                new Fills(
+                    new Fill(                                                           // Index 0 - The default fill.
+                        new PatternFill() { PatternType = PatternValues.None }),
+                    new Fill(                                                           // Index 1 - The default fill of gray 125 (required)
+                        new PatternFill() { PatternType = PatternValues.Gray125 }),
+                    new Fill(                                                           // Index 2 - The yellow fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "FFFFFF00" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 3 - The silver fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "C0C0C0" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 4 - US/MX color fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "00CCFF" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 5 - AUS color fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "FFFF99" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 6 - Europe color fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "CCFFFF" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 7 - JAP color fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "FFCC99" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 8 - China color fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "00FF00" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 9 - export color fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "00CCFF" } }
+                        ) { PatternType = PatternValues.Solid }),
+                        new Fill(                                                           // Index 9 - header background fill.
+                        new PatternFill(
+                            new ForegroundColor() { Rgb = new HexBinaryValue() { Value = "273C76" } }
+                        ) { PatternType = PatternValues.Solid })
+
+                ),
+
+                new Borders(
+                    new Border(                                                         // Index 0 - The default border.
+                        new LeftBorder(),
+                        new RightBorder(),
+                        new TopBorder(),
+                        new BottomBorder(),
+                        new DiagonalBorder()),
+                    new Border(                                                         // Index 1 - Applies a Left, Right, Top, Bottom border to a cell
+                        new LeftBorder(
+                            new Color() { Auto = true }
+                        ) { Style = BorderStyleValues.Thin },
+                        new RightBorder(
+                            new Color() { Auto = true }
+                        ) { Style = BorderStyleValues.Thin },
+                        new TopBorder(
+                            new Color() { Auto = true }
+                        ) { Style = BorderStyleValues.Thin },
+                        new BottomBorder(
+                            new Color() { Auto = true }
+                        ) { Style = BorderStyleValues.Thin },
+                        new DiagonalBorder())
+                ),
+
+                new CellFormats(
+                    new CellFormat() { FontId = 0, FillId = 0, BorderId = 0 },                          // Index 0 - The default cell style.  If a cell does not have a style index applied it will use this style combination instead
+                    new CellFormat() { FontId = 1, FillId = 0, BorderId = 0, ApplyFont = true },       // Index 1 - Bold 
+                    new CellFormat() { FontId = 2, FillId = 0, BorderId = 0, ApplyFont = true },       // Index 2 - Italic
+                    new CellFormat() { FontId = 3, FillId = 0, BorderId = 0, ApplyFont = true },       // Index 3 - Times Roman
+                    new CellFormat() { FontId = 0, FillId = 2, BorderId = 0, ApplyFill = true },       // Index 4 - Yellow Fill
+                    new CellFormat(                                                                   // Index 5 - Alignment
+                        new Alignment() { Horizontal = HorizontalAlignmentValues.Center, Vertical = VerticalAlignmentValues.Center }
+                    ) { FontId = 0, FillId = 0, BorderId = 0, ApplyAlignment = true },
+                    new CellFormat() { FontId = 0, FillId = 0, BorderId = 1, ApplyBorder = true },      // Index 6 - Border
+                    new CellFormat() { FontId = 1, FillId = 3, BorderId = 1, ApplyBorder = true },     // Index 7 - Header - Border,bold,silver background
+                    new CellFormat() { FontId = 1, FillId = 4, BorderId = 1, ApplyBorder = true },      // Index 8 - Header - Border,bold,US/MX background
+                    new CellFormat() { FontId = 1, FillId = 5, BorderId = 1, ApplyBorder = true },      // Index 9 - Header - Border,bold,AUS background
+                    new CellFormat() { FontId = 1, FillId = 6, BorderId = 1, ApplyBorder = true },      // Index 10 - Header - Border,bold,EUR background
+                    new CellFormat() { FontId = 1, FillId = 7, BorderId = 1, ApplyBorder = true },      // Index 11 - Header - Border,bold,JAP background
+                    new CellFormat() { FontId = 1, FillId = 8, BorderId = 1, ApplyBorder = true },      // Index 12 - Header - Border,bold,China background
+                    new CellFormat() { FontId = 1, FillId = 9, BorderId = 1, ApplyBorder = true },      // Index 13 - Header - Border,bold,export background
+                     new CellFormat() { FontId = 0, FillId = 4, BorderId = 1, ApplyBorder = true },      // Index 14 - content - Border,bold,US/MX background
+                    new CellFormat() { FontId = 0, FillId = 5, BorderId = 1, ApplyBorder = true },      // Index 15 - content - Border,bold,AUS background
+                    new CellFormat() { FontId = 0, FillId = 6, BorderId = 1, ApplyBorder = true },      // Index 16 - content - Border,bold,EUR background
+                    new CellFormat() { FontId = 0, FillId = 7, BorderId = 1, ApplyBorder = true },      // Index 17 - content - Border,bold,JAP background
+                    new CellFormat() { FontId = 0, FillId = 8, BorderId = 1, ApplyBorder = true },      // Index 18 - content - Border,bold,China background
+                    new CellFormat() { FontId = 0, FillId = 9, BorderId = 1, ApplyBorder = true },      // Index 19 - content - Border,bold,export background
+                    new CellFormat() { FontId = 4, FillId = 10, BorderId = 1, ApplyBorder = true }      // Index 20 - content - No Border,bold,no background, 
+                )
+            );
+        }
+
+    }
+}
