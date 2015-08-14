@@ -1,0 +1,440 @@
+@model Tennant.GlobalAttributes.Web.ViewModels.GlobalAttributeListViewModel
+@using Tennant.GlobalAttributes.Web.Utils
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    input {
+        width: 100px;
+    }
+</style>
+
+<h2>Index</h2>
+<div id="buttonGroup">
+    <ul id="ipcGroupingList">
+        <li ipcgroupid="0">All</li>
+        @foreach (var item in Model.IPCGroups)
+        {
+            <li ipcgroupid="@Html.Encode(item.ID)">@Html.DisplayFor(IPCGroup => item.Name)</li>
+        }        
+    </ul>
+    <div style="clear: both;"></div>    
+</div>
+<div id="client-data" class="hidden" sort-features-url="@Url.Action("SortFeatures","Features")" sort-attributes-url="@Url.Action("SortAttributes","GlobalAttributes")">
+</div>
+
+@if (Model.UserPermission.HasEditGlobalAttributes)
+{
+    <input type="button" value="Add New" class="add-button" />
+}
+<table id="globalAttributeTable" class="GAL">
+    <thead>
+        <tr>
+            <th>Action</th>
+            <th>Approal State</th>
+            <th>IPC Grouping</th>
+            <th>Attribute<br /><a onclick="switchDisplay('Attribute');">Switch</a></th>
+            <th>Feature<br /><a onclick="switchDisplay('Feature');">Switch</a></th>
+            <th>Customer Facing</th>
+            <th>Attachment Rate Reporting</th>
+            <th>Option Profitability Reporting</th>
+            @foreach (var pf in Model.ProductFamilies)
+            {
+                <th>@Html.Encode(pf.Name)</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+    @Html.Partial("_CreateOrEdit", Tennant.GlobalAttributes.Web.Models.GlobalAttributeLineDTO.Create())
+
+    @foreach (var item in Model.GlobalAttributeLines)
+    {
+        <tr ipcgroupingid="@Html.Encode(item.IPCGroupingId)" attributeId="@Html.Encode(item.AttributeId)" featureId="@Html.Encode(item.ID)" class="@(item.ID == -1 ? "hidden" : "")">
+            <td>
+                @if (Model.UserPermission.HasEditGlobalAttributes)
+                {
+                    <input type="button" value="Edit" class="edit-button" />
+                }
+            </td>
+            <td>
+                <div class="read-field">
+                    @if (item.IsApproved)
+                    { <p>Approved</p>}
+                    else
+                    {
+                        if (Model.UserPermission.HasApproveGlobalAttributes)
+                        {
+                            <input type="button" class="approval-button" value="Approve" />
+                        }
+                        else
+                        {
+                            <p>Pending</p>
+                        }
+                    }
+                </div>
+            </td>
+            <td class="IPCGroupColumn">
+                    @Html.DisplayFor(modelItem => item.IPCGroupingName)
+            </td>
+            <td attribute="@Html.Encode(item.AttributeName)" class="AttributeColumn">
+                <div class="read-field">
+                    @if (Model.UserPermission.HasEditGlobalAttributes)
+                    {
+                        <span style="display:inline-block;" class="ui-icon ui-icon-arrow-1-n"></span>
+                        <span style="display:inline-block;" class="ui-icon ui-icon-arrow-1-s"></span>
+                    }
+                </div>
+                <span class="customerNameAttribute"> @Html.DisplayFor(modelItem => item.AttributeName)   </span>
+                <span class="characteristicNameAttribute" style="text-transform: uppercase; display:none;">@Html.DisplayFor(modelItem => item.AttributeCharacteristicName)</span>                  
+            </td>            
+            <td feature="@Html.Encode(item.FeatureName)" class="FeatureColumn">
+                <div class="read-field">
+                    @if (Model.UserPermission.HasEditGlobalAttributes)
+                    {
+                        <span style="display:inline-block;" class="ui-icon ui-icon-arrow-1-n"></span>
+                        <span style="display:inline-block;" class="ui-icon ui-icon-arrow-1-s"></span>
+                    }
+                    <span class="customerNameFeature"> @Html.DisplayFor(modelItem => item.FeatureName)  </span>
+                    <span class="characteristicNameFeature" style="text-transform: uppercase; display:none;">@Html.DisplayFor(modelItem => item.FeatureCharacteristicName)</span>                  
+                </div>
+            </td>
+            <td>
+                <div class="read-field">
+                    @Html.DisplayFor(modelItem => item.CustomerFacing)
+                </div>
+            </td>
+            <td>
+                <div class="read-field">
+                    @Html.DisplayFor(modelItem => item.AttachmentRateReporting)
+               </div> 
+            </td>
+            <td>
+                <div class="read-field">
+                    @Html.DisplayFor(modelItem => item.OptionProfitabilityReporting)
+               </div> 
+            </td>
+            
+            @foreach (var pf in item.ProductFamilyData)
+            {
+            <td productFamilyId="@Html.Encode(pf.ProductFamilyId)">
+                <div class="read-field viewer-popup">
+                    @(pf.IsAvailable==true ? "Y" : "N")
+               </div> 
+                <div style="display:none">
+                    <div id="model-viewer-@Html.Encode(item.ID)-@Html.Encode(pf.ProductFamilyId)" title="Selected item.">
+                        @foreach (var pfmodel in pf.SelectedModels)
+                        {
+                            <div>@Html.Encode(pfmodel)</div>
+                        }
+                    </div>
+                </div>
+            </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
+<div id="sort-viewer" class="hidden">
+    <ul id="sort-list"></ul>
+    <span><input type="button" value="Save" class="sort-viewer-save"/><input type="button" value="Cancel" onclick="$('.sort-viewer-save').unbind();$('#sort-viewer').dialog('close')" /></span>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //load filters if available
+        LoadIPCGroupFilter();
+        //initialize the arrows
+        
+        @if (Model.UserPermission.HasEditGlobalAttributes)
+        {
+        @:ShowHideArrows();
+        }
+        //register all of the click events
+        RegisterEvents();
+
+        $('#IPCGroupingId').trigger('change');
+        $('tr[featureid=-1]').find('.delete-button').addClass('hidden');
+    });
+
+    var RegisterEditEvents = function () {
+        $('.edit-row .save-button').click(function () {
+            if (SaveGlobalAttributeLine($(this).parents('tr'),false)) {
+                ShowRows('featureid');
+                $(this).parents('tr').find('.read-field').removeClass('hidden')
+                $(this).parents('tr').find('.editor-field').addClass('hidden')
+                $(this).parents('tr').find('.create-field').addClass('hidden')
+                $('tr[featureid=-1]').addClass('hidden')
+            }
+        });
+        $('.edit-row .cancel-button').click(function () {
+            ShowRows('featureid');
+            $(this).parents('tr').find('.read-field').removeClass('hidden')
+            $(this).parents('tr').find('.editor-field').addClass('hidden')
+            $(this).parents('tr').find('.create-field').addClass('hidden')
+            $('tr[featureid=-1]').addClass('hidden')
+            $('.edit-button').removeClass('hidden');
+            $('.edit-row').remove();
+        });
+        $('.edit-row .delete-button').click(function () {
+            var obj = this;
+            alertify.confirm("Are you sure you want to Delete this line?", function (e) {
+                if (e) {
+                    $('#workingOnItContainer').removeClass('hidden');
+                    window.location = '@Url.Action("DeleteLine", "GlobalAttributeList")' + '/' + $(obj).parents('tr').attr('featureid');
+                    // TODO: Update to use a POST
+                } else { }
+            });
+        });
+        $('.edit-row .approval-button').click(function () {
+            alertify.confirm("Are you sure you want to Approve this line?", function (e) {
+                if (e) {
+                    if (SaveGlobalAttributeLine($('.edit-row'),true)) {
+                        ShowRows('featureid');
+                        $(this).parents('tr').find('.read-field').removeClass('hidden')
+                        $(this).parents('tr').find('.editor-field').addClass('hidden')
+                        $(this).parents('tr').find('.create-field').addClass('hidden')
+                        $('tr[featureid=-1]').addClass('hidden')
+                    }
+                } else {
+                    // user clicked "cancel"
+                }
+            });
+        });
+        $('.edit-row .editor-popup').click(function () {
+            var id = $(this).parents('tr').attr('featureid');
+            var familyId = $(this).parents('td').attr('productfamilyid');
+            $("#model-editor-" + id + "-" + familyId).dialog();
+        });
+    }
+    var RegisterEvents = function () {
+        $('.edit-button').click(function () {
+            HideRows('featureid', -1);
+            var galDetailsUrl = '@Url.Action("Details", "GlobalAttributeList")'+'/'+$(this).parents('tr').attr('featureid');
+            $.ajax({
+                type: "GET",
+                url: galDetailsUrl,
+                //dataType: "json",
+                cache: false,            
+                //contentType: 'application/json; charset=utf-8',
+                beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+                success: function (response, status, xhr) {
+                    $('#globalAttributeTable').append(response);
+                    RegisterEditEvents();
+                    $('#workingOnItContainer').addClass('hidden');
+                },
+                //error: function () { alertify.error("An Error occured while getting details") }
+                error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "Error getting Details "); return false; }
+            });
+        });
+        $('.add-button').click(function () {
+            HideRows('featureid', -1);
+            $('tr[featureid=-1]').find('.read-field').addClass('hidden')
+            $('tr[featureid=-1]').find('.editor-field').removeClass('hidden')
+            $('tr[featureid=-1]').find('.create-field').removeClass('hidden')
+            $('tr[featureid=-1]').removeClass('hidden')
+            $('.edit-button').addClass('hidden');
+        });
+        $('.new-row .editor-popup').click(function () {
+            var id = $(this).parents('tr').attr('featureid');
+            var familyId = $(this).parents('td').attr('productfamilyid');
+            $("#model-editor-" + id + "-" + familyId).dialog();
+        });
+        $('.new-row .save-button').click(function () {
+            if (SaveGlobalAttributeLine($(this).parents('tr'))) {
+                ShowRows('featureid');
+                $(this).parents('tr').find('.read-field').removeClass('hidden')
+                $(this).parents('tr').find('.editor-field').addClass('hidden')
+                $(this).parents('tr').find('.create-field').addClass('hidden')
+                $('tr[featureid=-1]').addClass('hidden')
+            }
+        });
+        $('.new-row .cancel-button').click(function () {
+            ShowRows('featureid');
+            $(this).parents('tr').find('.read-field').removeClass('hidden')
+            $(this).parents('tr').find('.editor-field').addClass('hidden')
+            $(this).parents('tr').find('.create-field').addClass('hidden')
+            $('tr[featureid=-1]').addClass('hidden')
+            $('.edit-button').removeClass('hidden');
+            $('.edit-row').remove();
+        });
+
+        $('.viewer-popup').click(function () {
+            var id = $(this).parents('tr').attr('featureid');
+            var familyId = $(this).parents('td').attr('productfamilyid');
+            $("#model-viewer-" + id + "-" + familyId).dialog();
+        });
+
+        $('#IPCGroupingId').change(function () {
+            $('#AttributeId').empty();
+            $('#AttributeList').children('option').each(function () {
+                if ($(this).attr('ipcgroupid') == $('#IPCGroupingId').val())
+                    $('#AttributeId').append($(this).clone());
+            })
+        });
+
+        $('#ipcGroupingList li').click(function () {
+            toggleIPCGroup(this);
+        });
+
+        @if (Model.UserPermission.HasEditGlobalAttributes)
+        {
+            <text>
+            $('#ipcGroupingList').sortable({
+                update: ipcGroupingSort
+            });
+            </text>
+        }
+
+        $('.approval-button').click(function () {
+            var obj = this;
+            alertify.confirm("Are you sure you want to Approve this line?", function (e) {
+                if (e) {
+                    if (SaveGlobalAttributeLine($('.new-row'), true)) {
+                        ShowRows('featureid');
+                        $(this).parents('tr').find('.read-field').removeClass('hidden')
+                        $(this).parents('tr').find('.editor-field').addClass('hidden')
+                        $(this).parents('tr').find('.create-field').addClass('hidden')
+                        $('tr[featureid=-1]').addClass('hidden')
+                    }
+                } else {
+                    // user clicked "cancel"
+                }
+            });
+        });
+
+        $('.FeatureColumn .ui-icon-arrow-1-n').click(function () {
+            SortFeatures($(this).parents('tr').attr('attributeid'));
+        });
+        $('.FeatureColumn .ui-icon-arrow-1-s').click(function () {
+            SortFeatures($(this).parents('tr').attr('attributeid'));
+        });
+
+        $('.AttributeColumn .ui-icon-arrow-1-n').click(function () {
+            SortAttributes($(this).parents('tr').attr('ipcgroupingid'));
+        });
+        $('.AttributeColumn .ui-icon-arrow-1-s').click(function () {
+            SortAttributes($(this).parents('tr').attr('ipcgroupingid'));
+        });
+    }
+
+    function MoveRow(direction, group, id) {
+        var url = "";
+        if (direction == 'u') {
+            if (group == 'attribute') {
+                url = '@Url.Action("MoveAttributeUp", "GlobalAttributeList")' + '/' + id;
+            } else {
+                url = '@Url.Action("MoveFeatureUp", "GlobalAttributeList")' + '/' + id;
+            }
+        } else {
+            if (group == 'attribute') {
+                url = '@Url.Action("MoveAttributeDown", "GlobalAttributeList")' + '/' + id;
+             } else {
+                url = '@Url.Action("MoveFeatureDown", "GlobalAttributeList")' + '/' + id;
+             }
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            cache: false,
+            contentType: 'application/json; charset=utf-8',            
+            beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+            success: function () { RefreshPage(); return true; },
+            error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "Sorting " + group + " error"); return false; }
+        });
+    }
+
+    function SaveGlobalAttributeLine(row,isApproved) {
+        var productFamilyData = MapProductFamilyData(row);
+
+        var featureId = $(row).attr('featureid');
+        var url = '@Url.Action("UpdateLine", "GlobalAttributeList")';
+        if (featureId == "-1")
+            url = '@Url.Action("NewLine", "GlobalAttributeList")';
+        var ipcGroupingId = $(row).attr('ipcgroupingid');
+        if (ipcGroupingId == "-1")
+            ipcGroupingId = $(row).find("#IPCGroupingId").first().val();
+        var attributeId = $(row).attr('attributeid');
+        if (attributeId == "-1")
+            attributeId = $(row).find("#AttributeId").first().val();
+
+
+        var rowDTO = {
+            ID: $(row).attr("featureid"),
+            IsApproved: isApproved,
+            FeatureName : $(row).find("#FeatureName").first().val(),
+            FeatureCharacteristicName: $(row).find("#FeatureCharacteristicName").first().val(),
+            IPCGroupingId : ipcGroupingId,
+            AttributeId: attributeId,
+            CustomerFacing: ReadNullableBoolean($(row).find("#CustomerFacing").first()), 
+            AttachmentRateReporting: ReadNullableBoolean($(row).find("#AttachmentRateReporting").first()), 
+            OptionProfitabilityReporting: ReadNullableBoolean($(row).find("#OptionProfitabilityReporting").first()), 
+            ProductFamilyData: productFamilyData
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            dataType: "json",
+            cache: false,
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(rowDTO),
+            beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+            success: function () { RefreshPage(); return true; },
+            error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "Saving feature error"); return false; }
+        });
+
+    }
+
+    function MapProductFamilyData(row) {
+        var featureId = $(row).attr('featureid');
+        var familyData = [];
+        var familyCells = $(row).find('[productfamilyid]');
+        for(var i=0;i<familyCells.length;i++) {
+            var cell = familyCells[i];
+            var productFamilyId = $(cell).attr('productfamilyid')
+            var selectedModels = [];
+            var checkboxes = $('#model-editor-'+featureId+'-'+productFamilyId).find('#selectedModels');
+            for (var x = 0; x < checkboxes.length; x++) {
+                if($(checkboxes[x]).is(':checked'))
+                    selectedModels.push($(checkboxes[x]).val());
+            }
+
+            var familyDTO = {
+                ProductFamilyId: productFamilyId,
+                IsAvailable: ReadNullableBoolean($(cell).find("#pf_IsAvailable")),
+                SelectedModels: selectedModels
+            }
+            familyData.push(familyDTO);
+        }
+        return familyData;
+    }
+
+    function ReadNullableBoolean(control) {
+        if ($(control).val() == "True")
+            return true;
+        if ($(control).val() == "False")
+            return false;
+        return null;
+    }
+
+    function ipcGroupingSort(event, ui) {
+        var itemId = ui.item.attr('ipcgroupid');
+        var leftItemId = ui.item.prev().attr('ipcgroupid');
+        var ajaxUrl = '@Url.Action("SortIPCGroup", "GlobalAttributeList")';
+        $.ajax({
+            type: "POST",
+            url: ajaxUrl,
+            dataType: "json",
+            cache: false,
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ ItemId: itemId, LeftItemId: leftItemId }),            
+            beforeSend: function () { $('#workingOnItContainer').removeClass('hidden'); },
+            success: function () { RefreshPage();},
+            error: function (xhr, ajaxOptions, thrownError) { ProcessAJaxError(xhr, ajaxOptions, thrownError, "IPCGroup sort error"); return false; }
+        });
+    }
+
+</script>
