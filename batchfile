@@ -1,0 +1,136 @@
+PEPMTScompile.bat
+@ECHO OFF
+
+@CLS
+
+@REM *******************************************************
+
+@REM ** This batch file will compile the PEP server application
+@REM ** Each project is named and code is called to compile each.
+@REM ** The compile is logged into a file, and conditional compilation
+@REM ** constants are asserted.
+@REM ** 
+@REM ** The projects to be compiled are listed in the file 
+@REM ** PEPServerList.txt
+@REM ** 
+@REM *******************************************************
+
+@REM ** The file we will log compiles to, assumed current directory
+SET logPath=MakeLog.txt
+
+@REM ** List all of the projects here.  These are file to be compiled
+@REM ** We could use a fully qualified path to compile and project
+
+SET curDir=%~dp0
+
+@REM set the path of the VB exe, look in different directories
+
+SET vbPathOnly=:\Program Files\Microsoft Visual Studio\VB98\VB6.EXE
+REM SET vbPath=E:\Program Files\Microsoft Visual Studio\VB98\VB6.EXE
+
+IF EXIST "C%vbPathOnly%" (
+	SET vbPath=C%vbPathOnly%
+	GOTO FOUNDVBEXE
+	)
+
+IF EXIST "E%vbPathOnly%" (
+	SET vbPath=E%vbPathOnly%
+	GOTO FOUNDVBEXE
+	)	
+	
+ECHO Unable to find the VB EXE
+GOTO FINISH
+
+:FOUNDVBEXE
+
+ECHO ***************************************************
+ECHO ***************************************************
+ECHO **
+ECHO ** PEP MTS COMPILE BEGIN
+ECHO **
+ECHO ** LOGGED AT: %logPath%
+ECHO ***************************************************
+ECHO ***************************************************
+
+@REM ** We append to the log file the begin compile header
+ECHO ************************************************************>>%logPath%
+ECHO ****** BEGIN COMPILE ***************************************>>%logPath%
+Date /t >>%logPath%
+Time /t >>%logPath%
+ECHO.
+ECHO ************************************************************>>%logPath%
+
+@REM ** Loop through each project in file
+@REM ** First we call VB6 with the project name, log file name, and conditional compile constants
+@REM ** Then we set the errMsg to the project name
+@REM ** IF we had an error then we jump to the error report code
+
+FOR /F "tokens=1 delims=" %%A IN (%curDir%PEPServerList.txt) DO (
+	
+	ECHO Compiling %%A
+	
+	"%vbPath%" /makedll %curDir%%%A /out %logPath% 
+	set errMsg=Project: %%A
+	IF errorlevel 1 GOTO ERRORREPORT
+	
+	)
+
+GOTO SUCCESS
+
+:SUCCESS
+
+@REM ** We are successful
+
+ECHO ***************************************************
+ECHO ***************************************************
+ECHO ** 
+ECHO ** COMPILE COMPLETED
+ECHO ** 
+ECHO ** CHECK LOGFILE: %logPath% FOR DETAILS
+ECHO ***************************************************
+ECHO ***************************************************
+
+@REM ** Jump to end, over error code
+
+GOTO FINISH
+
+:ERRORREPORT
+
+@REM ** We have a failure, we jumped here
+
+ECHO.
+ECHO.
+ECHO.
+ECHO.
+ECHO ***************************************************
+ECHO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ECHO !! %errMsg%
+ECHO !!
+ECHO !! COMPILE FAILED
+ECHO !!
+ECHO !! CHECK LOGFILE: %logPath% FOR DETAILS
+ECHO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ECHO ***************************************************
+
+@REM Shell log file
+
+%logPath%
+
+:FINISH
+
+
+@REM ** We append to the log file the end compile header
+
+ECHO ************************************************************>>%logPath%
+ECHO ****** END COMPILE >>%logPath%
+Date /t >>%logPath%
+Time /t >>%logPath%
+ECHO ************************************************************>>%logPath%
+ECHO.>>%logPath%
+ECHO.>>%logPath%
+ECHO.>>%logPath%
+ECHO.>>%logPath%
+
+@PAUSE
+
+@ECHO ON
