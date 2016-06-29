@@ -1,0 +1,97 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Collections;
+using System.Configuration;
+using System.Threading;
+using System.Net;
+using System.Threading;
+
+namespace QuoteParallelSubmissionTest
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int maxLimit = int.Parse(System.Configuration.ConfigurationManager.AppSettings.Get("MaxDegreeOfParallelism"));
+            ServicePointManager.UseNagleAlgorithm = true;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.CheckCertificateRevocationList = true;
+            ServicePointManager.DefaultConnectionLimit = maxLimit;
+            Parallel.For(0, 25, new ParallelOptions { MaxDegreeOfParallelism = maxLimit }, index => {
+                Process(index);
+            });
+        }
+
+        internal static void Process(int id)
+        {
+
+            WebRequest req = null;
+            WebResponse rsp = null;
+            try
+            {
+                string fileName = System.Configuration.ConfigurationManager.AppSettings.Get("RequestFile");// @"c:\\request.txt";
+                string uri = System.Configuration.ConfigurationManager.AppSettings.Get("TestUri");  //"http://Service/QS.aspx";
+                req = WebRequest.Create(uri);
+                //req.Proxy = WebProxy.GetDefaultProxy(); // Enable if using proxy
+                req.Method = "POST";// Post method
+                req.ContentType = "text/xml";// content type
+                // Wrap the request stream with a text-based writer
+                StreamWriter writer = new StreamWriter(req.GetRequestStream());
+                // Write the XML text into the stream
+                writer.WriteLine(GetTextFromXMLFile(fileName));
+                writer.Close();
+                // Send the data to the webserver
+                rsp = req.GetResponse();
+                if (System.Configuration.ConfigurationManager.AppSettings.Get("LogResponses").ToLower() == "y")
+                {
+                    WriteResponse(rsp, id);
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw webEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (req != null) req.GetRequestStream().Close();
+                if (rsp != null) rsp.GetResponseStream().Close();
+            }
+        }
+
+        private static string GetTextFromXMLFile(string file)
+        {
+            StreamReader reader = new StreamReader(file);
+            string ret = reader.ReadToEnd();
+            reader.Close();
+            return ret;
+        }
+
+        public static void WriteResponse(WebResponse response, int fileIndex)
+        {
+            string filePath = System.IO.Path.Combine(System.Configuration.ConfigurationManager.AppSettings.Get("ReponsePath"), fileIndex.ToString() + ".htm");
+            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            {
+                File.AppendAllText(filePath, response.Headers.ToString());
+                File.AppendAllText(filePath, reader.ReadToEnd());
+            }
+        }
+
+    }
+}
+/*
+ <appSettings>
+    <add key="RequestFile" value="c:\request.txt"/>
+    <add key="TestUri" value="http://Service/QS.aspx"/>
+    <add key="MaxDegreeOfParallelism" value="8"/>
+    <add key="LogResponses" value="N"/>
+    <add key="ReponsePath" value="C:\temp\responses\"/>
+  </appSettings>
+  */
