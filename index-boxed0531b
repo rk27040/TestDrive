@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--title-->
+    <title>Daily News | News & Magazine Template</title>
+
+    <!--CSS-->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/magnific-popup.css" rel="stylesheet">
+    <link href="css/owl.carousel.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+
+    <!--Google Fonts-->
+    <link href='https://fonts.googleapis.com/css?family=Signika+Negative:400,300,600,700' rel='stylesheet' type='text/css'>
+
+    <!--[if lt IE 9]>
+	    <script src="js/html5shiv.js"></script>
+	    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+</head>
+<!--/head-->
+<body class="box-layout">
+    <div id="main-wrapper" class="box-width">
+
+        <header id="navigation">
+            <div class="navbar" role="banner">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                       <a class="navbar-brand" href="index.html">
+							<img class="main-logo img-responsive" src="images/logo2.png" alt="">
+						</a>
+                    </div>
+                    <nav id="mainmenu" class="navbar-left collapse navbar-collapse">
+                       <a class="secondary-logo" href="index.html">
+							<img class="img-responsive" src="images/logo2.png" alt="">
+						</a>
+                        <ul class="nav navbar-nav">
+                            <li><a href="listing.html">Business</a></li>
+                            <li><a href="listing.html">Technology</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="searchNlogin">
+                        <ul>
+                            <li class="search-icon"><i class="fa fa-search"></i></li>
+                            <li class="dropdown user-panel"><a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+                                <div class="dropdown-menu top-user-section">
+                                    <div class="top-user-form">
+                                        This is a drop down content
+                                    </div>
+
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="search">
+                            <form>
+                                <input type="text" class="search-form" autocomplete="off" placeholder="Type & Press Enter">
+                            </form>
+                        </div>
+                        <!--/.search-->
+                    </div>
+                    <!--.searchNlogin -->
+                </div>
+            </div>
+        </header>
+        <!--/#navigation-->
+
+        <div class="container-fluid">
+
+            <!-- advertisement section starts-->
+            <div class="section add inner-add">
+                <a href="#">
+                    <img class="img-responsive" src="images/post/add/add2.jpg" alt="" /></a>
+            </div>
+            <!--/.section-->
+            <!-- advertisement section ends-->
+
+
+            <!-- top slider starts-->
+            <div class="section" id="main-slider">
+                <div class="post feature-post" style="margin-right: 1px;">
+                    <img src="images/TopHeadlines/1.jpg" class="feature-post-image" />
+                    <div class="post-content">
+                        <div class="catagory"><a href="#">Trending</a></div>
+                        <h2 class="entry-title">
+                            <a href="news-details.html">Geetha Madhuri about metro movie</a>
+                        </h2>
+                    </div>
+                </div>
+                <!--/post-->
+                <div class="post feature-post" style="margin-right: 1px;">
+                    <img src="images/TopHeadlines/3.jpg" class="feature-post-image" />
+                    <div class="post-content">
+                        <div class="catagory"><a href="#">Just released</a></div>
+                        <h2 class="entry-title">
+                            <a href="news-details2.html">Music: Katama Rayudu</a>
+                        </h2>
+                    </div>
+                </div>
+                <!--/post-->
+                <div class="post feature-post" style="margin-right: 1px;">
+                    <img src="images/TopHeadlines/4.jpg" class="feature-post-image" />
+                    <div class="post-content">
+                        <div class="video-icon">
+                            <a href="news-details2.html"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                        <div class="catagory"><a href="#">Lifestyle</a></div>
+                        <h2 class="entry-title">
+                            <a href="news-details2.html">The sketch had David once again impersonating Sanders as voters cussed</a>
+                        </h2>
+                    </div>
+                </div>
+                <!--/post-->
+                <div class="post feature-post" style="margin-right: 1px;">
+                    <img src="images/TopHeadlines/1.jpg" class="feature-post-image" />
+                    <div class="post-content">
+                        <h2 class="entry-title">
+                            <a href="news-details.html">Miccrosoft agreement with Andhra Pradesh </a>
+                        </h2>
+                    </div>
+                </div>
+                <!--/post-->
+
+            </div>
+            <!-- top slider ends-->
+
+
+            <div class="section">
+                <div class="row">
+
+                    <div class="col-sm-6">
+                        <div id="site-content" class="site-content">
+                            <div class="middle-content">
+                                <div class="section top-news">
+
+                                    <div class="health-feature">
+                                        <div class="post">
+                                            <div class="post-content">
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">Before123 he was a presidential candidate</a>
+                                                </h2>
+                                                <div class="entry-content">
+                                                    <p>Text of the printing and typesetting industry orem Ipsum has been the industry standard dummy text ever since the when an unknown printer took a galley of type and scrambled it to make a type specimen book ......</p>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                        <div class="post">
+                                            <div class="post-content">
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">Before123 he was a presidential candidate</a>
+                                                </h2>
+                                                <div class="entry-content">
+                                                    <p>Text of the printing and typesetting industry orem Ipsum has been the industry standard dummy text ever since the when an unknown printer took a galley of type and scrambled it to make a type specimen book ......</p>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                        <div class="post">
+                                            <div class="post-content">
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">Before123 he was a presidential candidate</a>
+                                                </h2>
+                                                <div class="entry-content">
+                                                    <p>Text of the printing and typesetting industry orem Ipsum has been the industry standard dummy text ever since the when an unknown printer took a galley of type and scrambled it to make a type specimen book ......</p>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                        <div class="post">
+                                            <div class="post-content">
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">Before123 he was a presidential candidate</a>
+                                                </h2>
+                                                <div class="entry-content">
+                                                    <p>Text of the printing and typesetting industry orem Ipsum has been the industry standard dummy text ever since the when an unknown printer took a galley of type and scrambled it to make a type specimen book ......</p>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                        <div class="post">
+                                            <div class="post-content">
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">Before123 he was a presidential candidate</a>
+                                                </h2>
+                                                <div class="entry-content">
+                                                    <p>Text of the printing and typesetting industry orem Ipsum has been the industry standard dummy text ever since the when an unknown printer took a galley of type and scrambled it to make a type specimen book ......</p>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                    </div>
+                                </div>
+                                <!--/.health-section -->
+
+                            </div>
+                            <!--/.middle-content-->
+                        </div>
+                        <!--/#site-content-->
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div id="sitebar">
+                            <div class="widget">
+                                <ul class="post-list">
+                                    <li>
+                                        <div class="post small-post">
+                                            <div class="entry-header">
+                                                <div class="entry-thumbnail">
+                                                    <a href="news-details.html">
+                                                        <img class="img-responsive" src="images/post/rising/2.jpg" alt="" /></a>
+                                                </div>
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="video-catagory"><a href="#">Business</a></div>
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">The interview comes as the infidelity scandal and other </a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <div class="entry-header">
+                                                <div class="entry-thumbnail">
+                                                    <a href="news-details.html">
+                                                        <img class="img-responsive" src="images/post/rising/3.jpg" alt="" /></a>
+                                                </div>
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="video-catagory"><a href="#">Sports</a></div>
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">They have long conversations together. It's a very good</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <div class="entry-header">
+                                                <div class="entry-thumbnail">
+                                                    <a href="news-details.html">
+                                                        <img class="img-responsive" src="images/post/rising/4.jpg" alt="" /></a>
+                                                </div>
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="video-catagory"><a href="#">Technology</a></div>
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">He just sort of puts his hands on her shoulders</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+
+                                    <li>
+                                        <div class="post small-post">
+                                            <div class="entry-header">
+                                                <div class="entry-thumbnail">
+                                                    <a href="news-details.html">
+                                                        <img class="img-responsive" src="images/post/rising/6.jpg" alt="" /></a>
+                                                </div>
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="video-catagory"><a href="#">Health</a></div>
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">The winner of the caucuses is decided by state</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <div class="entry-header">
+                                                <div class="entry-thumbnail">
+                                                    <a href="news-details.html">
+                                                        <img class="img-responsive" src="images/post/rising/7.jpg" alt="" /></a>
+                                                </div>
+                                            </div>
+                                            <div class="post-content">
+                                                <div class="video-catagory"><a href="#">Lifestyle</a></div>
+                                                <h2 class="entry-title">
+                                                    <a href="news-details.html">Rosa went with the man to another town in Mexico called Tenancingo, where he introduced</a>
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--/#widget-->
+
+
+                        </div>
+                        <!--/#sitebar-->
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="left-sidebar">
+                            <div class="post medium-post">
+                                <div class="entry-header">
+                                    <div class="entry-thumbnail">
+                                        <a href="news-details.html">
+                                            <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <h2 class="entry-title">
+                                        <a href="news-details.html">The album never recovered the studio production costs</a>
+                                    </h2>
+                                </div>
+                            </div>
+                            <!--/post-->
+                            <div class="post medium-post">
+                                <div class="entry-header">
+                                    <div class="entry-thumbnail">
+                                        <a href="news-details.html">
+                                            <img class="img-responsive" src="images/post/2.jpg" alt="" /></a>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <h2 class="entry-title">
+                                        <a href="news-details.html">I wish I could say Rosa's story was unique</a>
+                                    </h2>
+                                </div>
+                            </div>
+                            <!--/post-->
+                            <div class="post medium-post">
+                                <div class="entry-header">
+                                    <div class="entry-thumbnail">
+                                        <a href="news-details.html">
+                                            <img class="img-responsive" src="images/post/4.jpg" alt="" /></a>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    <h2 class="entry-title">
+                                        <a href="news-details.html">And the most streamed Beatles song on Spotify is...</a>
+                                    </h2>
+                                </div>
+                            </div>
+                            <!--/post-->
+                        </div>
+                        <!--/left-sidebar-->
+                    </div>
+
+
+
+                </div>
+            </div>
+            <!--/.section-->
+
+            <div class="section">
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <h4>Audio News</h4>
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                          <div class="widget">
+                                <ul class="post-list">
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    </ul>
+                              </div>
+                        <!--/post-->
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <h4>Video News</h4>
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                          <div class="widget">
+                                <ul class="post-list">
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    </ul>
+                              </div>
+                        <!--/post-->
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <h4>New Releases</h4>
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                          <div class="widget">
+                                <ul class="post-list">
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    </ul>
+                              </div>
+                        <!--/post-->
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <h4>Tweets</h4>
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                          <div class="widget">
+                                <ul class="post-list">
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    <li>
+                                        <div class="post small-post">
+                                            <h2 class="entry-title">
+                                                <a href="news-details.html">Patti Solis Doyle, who served as a senior adviser</a>
+                                            </h2>
+                                        </div>
+                                        <!--/post-->
+                                    </li>
+                                    </ul>
+                              </div>
+                        <!--/post-->
+                    </div>
+                   
+                </div>
+            </div>
+
+             <div class="section">
+                <h1 class="section-title title"><a href="listing.html">Reviews</a></h1>
+                <div class="row">
+                    <div class="col-sm-6 col-md-3">
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                        <!--/post-->
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                        <!--/post-->
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                        <!--/post-->
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="post medium-post">
+                            <div class="entry-header">
+                                <div class="entry-thumbnail">
+                                    <a href="news-details.html">
+                                        <img class="img-responsive" src="images/post/1.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h2 class="entry-title">
+                                    <a href="news-details.html">The album never recovered the studio production costs</a>
+                                </h2>
+                            </div>
+                        </div>
+                        <!--/post-->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--/.container-fluid-->
+
+
+        <!--/.footer-top-->
+        <footer id="footer">
+
+            <div class="footer-bottom">
+                <div class="container-fluid text-center">
+                    <p>Copyright &copy; 2016,  DailyNews. Developed by <a href="http://themeregion.com/">ThemeRegion</a></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!--/#main-wrapper-->
+
+
+    <!--/#scripts-->
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="js/owl.carousel.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+</body>
+</html>
