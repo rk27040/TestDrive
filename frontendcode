@@ -1,0 +1,75 @@
+@model WebApplication1.Models.TechBlog
+
+@{
+    ViewBag.Title = "Home Page";
+}
+@using (Html.BeginForm())
+{
+    <div class="jumbotron">
+        <h1>ASP.NET</h1>
+        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+        <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Raw(Model.Story)
+         </div>
+        <div class="col-md-4">
+            <h2>Get more libraries</h2>
+            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+            <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Web Hosting</h2>
+            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+            <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        </div>
+    </div>
+
+    <div class="row">
+        @Html.Raw(Model.Story)
+    </div>
+
+    @Html.TextAreaFor(m => m.Content, new { rows = "20", style = "resize:none;width:400px;", placeholder = Html.DisplayNameFor(m => m.Content), @class = "form-control input-lg textarea-editor" })
+    <br /><br />
+    <div id="summernote"><p>Hello Summernote</p></div>
+    <input type="submit" value="Submit" />
+}
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote();
+
+            $('.textarea-editor').summernote(
+                {
+                    height: 300,         // set editor height
+                    minHeight: null,       // set minimum height of editor
+                    maxHeight: null,       // set maximum height of editor
+                    focus: true,         // set focus to editable area after initializing summernote
+                    callbacks: { onImageUpload: function (files, editor, welEditable) { sendFile(files[0], editor, welEditable); } }
+                });
+
+        });
+
+          function sendFile(file, editor, welEditable) {
+                alert('RK');
+                data = new FormData();
+                data.append("file", file);
+                $.ajax({
+                    data: data,
+                    type: "POST",
+                    url: "@Url.Action("UploadImage", "Home")",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (url) {
+                       // editor.insertImage(welEditable, "https://webkul.com/blog/wp-content/uploads/2016/06/Screenshot_5.png");
+                        $('.textarea-editor').summernote("insertImage", "https://webkul.com/blog/wp-content/uploads/2016/06/Screenshot_5.png");
+                    }
+                });
+            }
+
+
+    </script>
+}
