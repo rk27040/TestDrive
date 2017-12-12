@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace TS.Choosco.Admin.Web.Models
+{
+    public class Article
+    {
+        public int ID { get; set; }
+        public string Title { get; set; }
+        public string SubHeader { get; set; }
+        public string Highlites { get; set; }
+        [AllowHtml]
+        public string FullContent { get; set; }
+        public string Images { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public DateTime ScheduledDate { get; set; }
+        public int StatusCode { get; set; }
+        //INITIATED, INPROCESS, COMPLETED, REVIEWED, READY, ACTIVE, INACTIVE,ARCHIVED
+        public string AssignedTo { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public string ModifieddBy { get; set; }
+
+
+
+    }
+}
