@@ -1,0 +1,87 @@
+ public ActionResult AddEvent(Article article)
+        {
+            if (article.Id == 0)
+            {
+                string path = Server.MapPath("~/Images");
+                article.Id = 0;
+                article.UniqueId = Guid.NewGuid();
+                article.CreatedUser = User.Identity.Name;
+                article.ModifiedUser = User.Identity.Name;
+                article.Status = ArticleStatus.Active;
+                string uploadedFileName = Path.Combine(path, Path.GetFileName(article.OrigImage));
+                string origFileName = Path.Combine(path, article.UniqueId.ToString() + Path.GetExtension(article.OrigImage));
+                System.IO.File.Move(uploadedFileName, origFileName);
+                article.OrigImage = Path.GetFileName(origFileName);
+                
+                string fileName = $"{article.UniqueId}_Main.PNG";
+                ImageHelper.SaveImageFromDataUrl(article.MainImage, Path.Combine(path,fileName));
+                article.MainImage = fileName;
+
+                fileName = $"{article.UniqueId}_Thumb.PNG";
+                ImageHelper.SaveImageFromDataUrl(article.Thumbnail, Path.Combine(path, fileName));
+                article.Thumbnail = fileName;
+
+                fileName = $"{article.UniqueId}_Full.PNG";
+                ImageHelper.SaveImageFromDataUrl(article.FullImage, Path.Combine(path, fileName));
+                article.FullImage = fileName;
+
+                ArticleDB db = new ArticleDB();
+                db.SaveArticle(ref article);
+            }
+            //save Images
+            return Json("{status:true}", JsonRequestBehavior.AllowGet);
+        }
+        
+        
+ public Article() { }
+ 
+   public ActionResult Create()
+        {
+            ViewBag.fileName = "blank_image.jpg";
+            Article model = new Article();
+
+            return View(model);
+        }
+        
+   
+   
+    function SampleAjaxMethod()
+        {
+            $("#dowrow").html("");
+            $("#env").val(findEnvironment());
+            var formData = $("#LogsForm").serialize();
+            $.ajax({
+                url: '@Url.Action("GetLogs")',
+                cache: false,
+                data: formData,
+                html: true,
+                success: function (data) {
+                    $("#EventRowsDiv").html(data);
+                    //alert('Success');
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(thrownError);
+                }
+
+            });
+        }
+        
+         function AjaxSample2() {
+            var var1 = $("#trex").val();
+            var var2 = $("#esert").val();
+            $.ajax({
+                url: '@Url.Action("ServersList")',
+                cache: false,
+                data: { "environment": var1, "tier": var2 },
+                success: function (data) {
+                    $("#ListDiv").html(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('error!!!');
+
+                }
+
+            });
+        }
+
+   
