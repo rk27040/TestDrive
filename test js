@@ -1,87 +1,482 @@
- public ActionResult AddEvent(Article article)
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using TS.Choosco.Common;
+using TS.Choosco.Common.Helpers;
+using TS.Choosco.Common.Entities;
+using TS.Choosco.DAL;
+using TS.Choosco.Admin.Web.Models;
+
+
+namespace TS.Choosco.Admin.Web.Controllers
+{
+    [Authorize]
+    public class ArticleController : BaseController
+    {
+
+        public ActionResult Index()
         {
-            if (article.Id == 0)
+            MainDisplay model = new MainDisplay();
+            ArticleDB db = new ArticleDB();
+            model.Articles = db.GetArticle("", 50);
+            model.StatusList = db.GetArticleStatuses(TSLoggedInUser().Id);
+            model.Users = UserDB.GetUsersList();
+            return View(model);
+        }
+        public ActionResult Create(string uid = null)
+        {
+           
+            ArticleDB db = new ArticleDB();
+            Article model;
+            if (uid == null)
             {
-                string path = Server.MapPath("~/Images");
-                article.Id = 0;
-                article.UniqueId = Guid.NewGuid();
+                ViewBag.fileName = "blank_image.jpg";
+                model = new Article();
+                model.Id = 0;
+                model.UniqueId = Guid.NewGuid();
+            }
+            else
+            {
+                model = db.GetArticle(Guid.Parse(uid));
+                ViewBag.fileName = model.OrigImage;
+            }
+            model.Statuses = db.GetArticleStatuses(TSLoggedInUser().Id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult UploadFile()
+        {
+            Guid guid = Guid.NewGuid();
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    //  Get all files from Request object  
+                    HttpFileCollectionBase files = Request.Files;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
+                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
+
+                        HttpPostedFileBase file = files[i];
+                        string fname;
+
+                        // Checking for Internet Explorer  
+                        if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        {
+                            string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                            fname = testfiles[testfiles.Length - 1];
+                        }
+                        else
+                        {
+                            fname = file.FileName;
+                        }
+
+                        // Get the complete folder path and store the file inside it.  
+                        fname = Path.Combine(Server.MapPath("~/Images/"), Guid.NewGuid() + Path.GetExtension(fname));
+                        file.SaveAs(fname);
+                        ViewBag.fileName = fname;
+                        return Json($"/Images/{Path.GetFileName(fname)}");
+                    }
+
+                    // Returns message that successfully uploaded  
+                    return Json("File Uploaded Successfully");
+                }
+                catch (Exception ex)
+                {
+                    return Json("Error occurred. Error details: " + ex.Message);
+                }
+            }
+            else
+            {
+                return Json("No files selected.");
+            }
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult AddEvent(Article article)
+        {
+            
+            string path = Server.MapPath("~/Images");
+            ArticleDB dbArticle = new ArticleDB();
+            Article articleExisitng = dbArticle.GetArticle(article.UniqueId);
+
+            if (articleExisitng != null && articleExisitng.Id > 0)
+            {
+                article.Id = articleExisitng.Id;
+                article.CreatedUser = articleExisitng.CreatedUser;
+                article.ModifiedUser = articleExisitng.ModifiedUser + "," + User.Identity.Name;
+            }
+            else
+            {
                 article.CreatedUser = User.Identity.Name;
                 article.ModifiedUser = User.Identity.Name;
-                article.Status = ArticleStatus.Active;
-                string uploadedFileName = Path.Combine(path, Path.GetFileName(article.OrigImage));
-                string origFileName = Path.Combine(path, article.UniqueId.ToString() + Path.GetExtension(article.OrigImage));
-                System.IO.File.Move(uploadedFileName, origFileName);
-                article.OrigImage = Path.GetFileName(origFileName);
-                
-                string fileName = $"{article.UniqueId}_Main.PNG";
-                ImageHelper.SaveImageFromDataUrl(article.MainImage, Path.Combine(path,fileName));
-                article.MainImage = fileName;
-
-                fileName = $"{article.UniqueId}_Thumb.PNG";
-                ImageHelper.SaveImageFromDataUrl(article.Thumbnail, Path.Combine(path, fileName));
-                article.Thumbnail = fileName;
-
-                fileName = $"{article.UniqueId}_Full.PNG";
-                ImageHelper.SaveImageFromDataUrl(article.FullImage, Path.Combine(path, fileName));
-                article.FullImage = fileName;
-
-                ArticleDB db = new ArticleDB();
-                db.SaveArticle(ref article);
             }
+            article.UniqueId = Guid.NewGuid();
+            string uploadedFileName = Path.Combine(path, Path.GetFileName(article.OrigImage));
+            string origFileName = Path.Combine(path, article.UniqueId.ToString() + Path.GetExtension(article.OrigImage));
+            System.IO.File.Move(uploadedFileName, origFileName);
+            article.OrigImage = Path.GetFileName(origFileName);
+
+            string fileName = $"{article.UniqueId}_Main.PNG";
+            ImageHelper.SaveImageFromDataUrl(article.MainImage, Path.Combine(path, fileName));
+            article.MainImage = fileName;
+
+            fileName = $"{article.UniqueId}_Thumb.PNG";
+            ImageHelper.SaveImageFromDataUrl(article.Thumbnail, Path.Combine(path, fileName));
+            article.Thumbnail = fileName;
+
+            fileName = $"{article.UniqueId}_Full.PNG";
+            ImageHelper.SaveImageFromDataUrl(article.FullImage, Path.Combine(path, fileName));
+            article.FullImage = fileName;
+
+            ArticleDB db = new ArticleDB();
+            db.SaveArticle(ref article);
+
+            
             //save Images
             return Json("{status:true}", JsonRequestBehavior.AllowGet);
         }
-        
-        
- public Article() { }
- 
-   public ActionResult Create()
-        {
-            ViewBag.fileName = "blank_image.jpg";
-            Article model = new Article();
 
-            return View(model);
-        }
-        
-   
-   
-    function SampleAjaxMethod()
+        [HttpPost, ValidateInput(false)]
+        public ActionResult UpdateStatus(Guid identifier, int status)
         {
-            $("#dowrow").html("");
-            $("#env").val(findEnvironment());
-            var formData = $("#LogsForm").serialize();
+            ArticleDB db = new ArticleDB();
+            db.SetArticleStatus(identifier, status);
+            return Json("{status:true}", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public ActionResult SetAssignment(Guid identifier, string name)
+        {
+            ArticleDB db = new ArticleDB();
+            db.SetAssgnedTo(identifier, name);
+            return Json("{status:true}", JsonRequestBehavior.AllowGet);
+        }
+
+    }
+
+}
+
+=================
+Create
+==============
+@model TS.Choosco.Common.Entities.Article
+@{
+    ViewBag.Title = "Create Article";
+}
+
+    @if (Model.Id == 0)
+    {
+        <h3>Create New Article</h3>
+    }
+    else
+    {
+        <h3>Edit Article</h3>
+
+    }
+@Html.HiddenFor(m => m.UniqueId)
+    <div class="row" style="background-color:lightblue;padding:10px;">
+        <div class="col-md-4">
+            Article ID: @Model.Id
+        </div>
+       <div class="col-md-4">
+            Status: @Html.DropDownListFor(x => Model.Status, new SelectList(Model.Statuses, "ID", "Description"), new { @class = "form-control" })
+            @*@Html.EnumDropDownListFor(m => m.Status, new { @calss = "form-control" })*@
+        </div>
+    </div>
+<br />
+<b>Article Header/Title</b>
+<div id="postEvent"></div>
+<b>Article Sub Header/Main Points</b>
+<div id="subHeader"></div>
+<b>Full Story</b>
+<div id="eventDetails"></div>
+
+@{
+    Html.RenderPartial("_UploadPartial");
+}
+<br />
+<input type="button" id="btnSave" value="Save Article" />
+
+@section Scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var uid;
+
+            $('#postEvent').summernote(
+                {
+                    placeholder: '<b>Enter article header....</b>',
+                    tabsize: 2,
+                    height: 100,
+                    maxHeight: 100,
+                    minHeight: 100,
+                    toolbar: [
+                        ['color', ['color']],
+                    ]
+                });
+
+            $('#subHeader').summernote({
+                placeholder: 'Enter main points here',
+                tabsize: 2,
+                height: 200,
+                maxHeight: 200,
+                minHeight: 200,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontsize', ['fontsize']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['table', ['table']],
+                    ['link', ['link', 'unlink']],
+                ]
+            });
+
+            $('#eventDetails').summernote({
+                placeholder: 'Enter story here...',
+                tabsize: 2,
+                height: 500,
+                maxHeight: 500,
+                minHeight: 500
+            });
+
+            $('#postEvent').summernote('code', @Model.Header);
+            $('#subHeader').summernote('code', @Model.SubHeader);
+            $('#eventDetails').summernote('code', @Model.Story);
+
+            var thumbNail;
+            var mainImage;
+            var largeImage;
+
+            $('#imgThumbnail').on('rcrop-changed rcrop-ready', function () {
+                thumbNail = $('#imgThumbnail').rcrop('getDataURL', 85, 85);
+            });
+
+            $('#imgMainImage').on('rcrop-changed rcrop-ready', function () {
+                largeImage = $('#imgMainImage').rcrop('getDataURL', 772, 434);
+                mainImage = $('#imgMainImage').rcrop('getDataURL', 386, 217);
+            });
+
+            $("#imgThumbnail").rcrop({
+                minSize: [83, 83],
+                preserveAspectRatio: true,
+                grid: true
+            });
+
+            $("#imgMainImage").rcrop({
+                minSize: [386, 217],
+                preserveAspectRatio: true,
+                grid: true
+            });
+
+            $("#imgFile").change(function () {
+
+                if (window.FormData !== undefined) {
+
+                    var fileUpload = $("#imgFile").get(0);
+                    var files = fileUpload.files;
+
+                    // Create FormData object
+                    var fileData = new FormData();
+
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+                        fileData.append(files[i].name, files[i]);
+                    }
+
+                    // Adding one more key to FormData object
+                    //fileData.append('username', ‘Manas’);
+
+                    $.ajax({
+                        url: '/Article/UploadFile',
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        data: fileData,
+                        success: function (result) {
+                            //alert(result);
+                            $("#imgThumbnail").rcrop("destroy");
+                            $("#imgThumbnail").attr("src", result);
+                            $("#imgThumbnail").rcrop("reInitilize");
+
+                            $("#imgMainImage").rcrop("destroy");
+                            $("#imgMainImage").attr("src", result);
+                            $("#imgMainImage").rcrop("reInitilize");
+
+                            uid = result;
+
+                        },
+                        error: function (err) {
+                            alert(err.statusText);
+                        }
+                    });
+                } else {
+                    alert("FormData is not supported.");
+                }
+
+
+            });
+
+
+            $("#btnSave").click(function () {
+
+                var url = "@Url.Action("AddEvent", "Article")";
+                var model = {
+                    Header: $('#postEvent').summernote('code'),
+                    Subheader: $('#subHeader').summernote('code'),
+                    Story: $('#eventDetails').summernote('code'),
+                    Thumbnail: thumbNail,
+                    MainImage: mainImage,
+                    FullImage: largeImage,
+                    OrigImage: uid
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: model,
+                    dataType: "html",
+                    success: function (resultData) {
+                        if (resultData.status === true) {
+                            alert("Event has been saved sucessfully.");
+                        }
+                        else {
+                            alert("Oops! Something went wrong!");
+                        }
+                    },
+                    error: function (e) {
+
+                        alert('error');
+                    }
+                });
+            })
+        });
+
+    </script>
+}
+<style type="text/css">
+    .imgrcop {
+        height: 300px;
+        /*width: 600px;*/
+    }
+</style>
+===============
+index
+===========
+
+@using TS.Choosco.Common.Entities
+
+@model TS.Choosco.Common.Entities.MainDisplay
+
+
+
+@{
+    ViewBag.Title = "My View";
+}
+
+<h4>My View</h4>
+<br /><br />
+<button type="button" class="btn btn-outline-primary" onclick="location.href='@Url.Action("Create", "Article")';return false;">Create Article</button>
+<br /><br />
+<div class="container">
+    <div class="row" style="background-color:gray;color:white;padding:8px;">
+        <div class="col-md-1">ID</div>
+        <div class="col-md-3">Header</div>
+        <div class="col-md-2">Created By</div>
+        <div class="col-md-3">Assigned To</div>
+        <div class="col-md-2">Status</div>
+        <div class="col-md-1">Actions</div>
+    </div>
+    <br />
+    @for (int i = 0; i < Model.Articles.Count ; i++)
+    {
+        
+        <div class="row" data-value="@Model.Articles[i].UniqueId">
+            <div class="col-md-1">@Model.Articles[i].Id</div>
+            <div class="col-md-3">@Html.Raw(Model.Articles[i].Header)</div>
+            <div class="col-md-2">@Model.Articles[i].CreatedUser</div>
+            <div class="col-md-3">@Html.DropDownListFor(x => Model.Articles[i].AssignedTo, new SelectList(Model.Users), new { @class = "AssignedToSelect" })</div>
+            <div class="col-md-2">
+                @Html.DropDownListFor(x => Model.Status, new SelectList(Model.StatusList, "ID", "Description"), new { @class = "StatusSelect" })
+            </div>
+            <div class="col-md-1">
+                <span class="ArticleEditButton"><button type="button" class="btn btn-primary btn-xs EditButton">Edit</button></span>
+            </div>    
+        </div>
+        <hr />
+    }
+    
+</div>
+@section Scripts {
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('body').on("click", ".ArticleEditButton", function () {
+
+            alert($(this).closest('.row').attr('data-value'));
+
+        });
+
+        $('body').on("change", ".AssignedToSelect", function () {
+            alert('Saving');
+            var id = $(this).closest('.row').attr('data-value');
+            var newValue = $(this).val();
+
             $.ajax({
-                url: '@Url.Action("GetLogs")',
+                type: 'POST',
+                url: '@Url.Action("SetAssignment")',
                 cache: false,
-                data: formData,
-                html: true,
+                data: { "identifier": id, "name": newValue },
                 success: function (data) {
-                    $("#EventRowsDiv").html(data);
-                    //alert('Success');
+                    alert('Status changed successfully');
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    alert(thrownError);
+                    alert('error3345!!!');
+
+                }
+            });
+
+        });
+
+        $('body').on("click", ".EditButton", function () {
+            var id = $(this).closest('.row').attr('data-value');
+            window.location.href = '/Article/Create?uid=' + id;
+        });
+
+        $('body').on("change", ".StatusSelect", function () {
+
+            alert('Saving');
+
+            var id = $(this).closest('.row').attr('data-value');
+            var status = $(this).val();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdateStatus")',
+                cache: false,
+                data: { "identifier": id, "status": status },
+                success: function (data) {
+                    alert('Assignment successful');
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('error 5345!!!');
+
                 }
 
             });
-        }
-        
-         function AjaxSample2() {
-            var var1 = $("#trex").val();
-            var var2 = $("#esert").val();
-            $.ajax({
-                url: '@Url.Action("ServersList")',
-                cache: false,
-                data: { "environment": var1, "tier": var2 },
-                success: function (data) {
-                    $("#ListDiv").html(data);
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert('error!!!');
+           
+        });
 
-                }
+    });
 
-            });
-        }
 
-   
+</script>
+    }
