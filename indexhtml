@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<!-- Basic Page Needs
+	================================================== -->
+	<meta charset="utf-8">
+	<title>Flex Mag - Powerfully Simple WordPress News &amp; Magazine Theme</title>
+
+	<!-- Mobile Specific Metas
+	================================================== -->
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+	<!--Favicon-->
+	<link rel="shortcut icon" href="images/favicon.html" type="image/x-icon">
+	<link rel="icon" href="images/favicon.html" type="image/x-icon">
+
+	<!-- CSS
+	================================================== -->
+
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<!-- FontAwesome -->
+	<!-- <link rel="stylesheet" href="css/font-awesome.min.css"> -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+	<!-- hamburgers css -->
+	<link rel="stylesheet" href="css/hamburgers.css">
+	<!-- metisMenu -->
+	<link rel="stylesheet" href="css/metisMenu.min.css">
+	<!-- Template styles-->
+	<link rel="stylesheet" href="css/style.css">
+	<!-- Responsive styles-->
+	<link rel="stylesheet" href="css/responsive.css">
+
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+	<!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+	<div class="body-inner">
+		<div class="overlay-black"></div>
+
+		<div class="sidenav-wrapper">
+			<div class="sidenav-inner">
+				<ul class="social-nav">
+					<li class="facebook"><a href=""><i class="fab fa-facebook-f"></i></a></li>
+					<li class="twitter"><a href=""><i class="fab fa-twitter"></i></a></li>
+					<li class="pinterest"><a href=""><i class="fab fa-pinterest"></i></a></li>
+					<li class="instagram"><a href=""><i class="fab fa-instagram"></i></a></li>
+					<li class="google-plus"><a href=""><i class="fab fa-google-plus-g"></i></a></li>
+					<li class="youtube-play"><a href=""><i class="fab fa-youtube"></i></a></li>
+					<li class="linkedin"><a href=""><i class="fab fa-linkedin-in"></i></a></li>
+					<li class="tumblr-fa-2"><a href=""><i class="fab fa-tumblr"></i></a></li>
+					<li class="rss-fa-2"><a href=""><i class="fas fa-rss"></i></a></li>
+				</ul>
+				<div class="sidenav">
+					<ul id="sidenav-menu">
+						<li>
+							<a href="#" class="has-plus">HOME</a></li>
+						<li>
+							<a href="#" class="has-arrow">FEATURES</a>
+							<ul class="dropdown_menu">
+								<li>
+									<a href="#" class="has-arrow">LOGO LOCATIONS</a>
+									<ul class="dropdown_menu">
+										<li><a href="#">Logo Leaderboard</a></li>
+										<li><a href="#">Logo Nav</a></li>
+										<li><a href="#">Logo Wide</a></li>
+									</ul>
+								</li>
+							</ul>
+							<ul class="dropdown_menu">
+								<li>
+									<a href="#" class="has-arrow">THEME SKINS</a>
+									<ul class="dropdown_menu">
+										<li><a href="#">Entertainment Skin</a></li>
+										<li><a href="#">Tech Skin</a></li>
+										<li><a href="#">Fashion Skin</a></li>
+										<li><a href="#">Sports Skin</a></li>
+									</ul>
+								</li>
+							</ul>
+							<ul class="dropdown_menu">
+								<li>
+									<a href="#" class="has-arrow">Featured Layouts</a>
+									<ul class="dropdown_menu">
+										<li><a href="#">Featured Posts 1</a></li>
+										<li><a href="#">Featured Posts 2</a></li>
+										<li><a href="#">Featured Posts 3</a></li>
+										<li><a href="#">Featured Posts 4</a></li>
+										<li><a href="#">Featured Posts 5</a></li>
+										<li><a href="#">Featured Posts 6</a></li>
+										<li><a href="#">Featured Posts 7</a></li>
+										<li><a href="#">Featured Posts 8</a></li>
+										<li><a href="#">Featured Posts 9</a></li>
+									</ul>
+								</li>
+							</ul>
+							<ul class="dropdown_menu">
+								<li>
+									<a href="#" class="has-arrow">Post Templates</a>
+									<ul class="dropdown_menu">
+										<li><a href="#">Post Templates 1</a></li>
+										<li><a href="#">Post Templates 2</a></li>
+										<li><a href="#">Post Templates 3</a></li>
+										<li><a href="#">Post Templates 4</a></li>
+										<li><a href="#">Post Templates 5</a></li>
+										<li><a href="#">Post Templates 6</a></li>
+										<li><a href="#">Post Templates 7</a></li>
+										<li><a href="#">Post Templates 8</a></li>
+										<li><a href="#">Image Gallery</a></li>
+										<li><a href="#">Audio Post</a></li>
+									</ul>
+								</li>
+							</ul>
+							<ul class="dropdown_menu">
+								<li>
+									<a href="#">Page Templates</a>
+									<ul class="dropdown_menu">
+										<li><a href="#">Authors List</a></li>
+										<li><a href="#">Full-Width Page</a></li>
+										<li><a href="#">Latest News</a></li>
+									</ul>
+								</li>
+								<li>
+									<a href="#">Optional Scoreboard</a>
+								</li>
+								<li>
+									<a href="#">Wallpaper Ad</a>
+								</li>
+								<li>
+									<a href="#">Typography</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a href="#">Buy Theme</a>
+						</li>
+						<li>
+							<a href="#">Sports</a>
+						</li>
+						<li>
+							<a href="#">Videos</a>
+						</li>
+						<li>
+							<a href="#">Shop</a>
+						</li>
+						<li>
+
+							<a href="#" class="has-arrow">More</a>
+							<ul class="dropdown_menu">
+								<li><a href="#">Business</a></li>
+								<li><a href="#">Entertainment</a></li>
+								<li><a href="#">Fashion</a></li>
+								<li><a href="#">Tech</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<nav class="navbar navbar-expand-lg dark-nav fixed-top">
+			<div class="container-fluid">
+				<button id="nav-toggler" class="hamburger hamburger--slider" type="button">
+					<span class="hamburger-box">
+						<span class="hamburger-inner"></span>
+					</span>
+				</button>
+				<a class="navbar-brand" href="#">
+					<img src="img/logo-nav.png" alt="">
+				</a>
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="nav navbar-nav mr-auto">
+						<li class="nav-item dropdown active">
+							<a href="#" class="nav-link">Home</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Features <i class="fa fa-angle-down"></i></a>
+							<ul class="dropdown-menu" role="menu">
+								<li class="dropdown-submenu">
+									<a href="#.">Category Layouts</a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Category Style 1</a></li>
+										<li><a href="#">Category Style 2</a></li>
+										<li><a href="#">Category Style 3</a></li>
+										<li><a href="#">Category Style 4</a></li>
+									</ul>
+								</li>
+								<li class="dropdown-submenu">
+									<a href="#.">Post Formates</a>
+									<ul class="dropdown-menu">
+										<li><a href="#">Single Post 1</a></li>
+										<li><a href="#">Single Post 2</a></li>
+										<li><a href="">Single Post 3</a></li>
+										<li><a href="">Single Post 4</a></li>
+									</ul>
+								</li>
+								<li class="dropdown-submenu">
+									<a href="#.">Sidebar</a>
+									<ul class="dropdown-menu">
+										<li><a href="">Left Sidebar</a></li>
+										<li><a href="">Right Sidebar</a></li>
+										<li><a href="">No Sidebar</a></li>
+									</ul>
+								</li>
+								<li class="dropdown-submenu">
+									<a href="#.">Shortcodes</a>
+									<ul class="dropdown-menu">
+										<li><a href="">Typography</a></li>
+										<li><a href="">Blockquotes</a></li>
+										<li><a href="">Tabs</a></li>
+									</ul>
+								</li>
+								<li class="dropdown-submenu">
+									<a href="#.">Pages</a>
+									<ul class="dropdown-menu">
+										<li><a href="">Author</a></li>
+										<li><a href="">404</a></li>
+										<li><a href="">Contact</a></li>
+									</ul>
+								</li>
+							</ul><!-- End dropdown -->
+						</li><!-- Features menu end -->
+						<li class="nav-item">
+							<a class="nav-link" href="">Technology</a>
+						</li>
+
+						<li class="dropdown nav-item mega-dropdown">
+							<a href="#" class="nav-link dropdown-toggler" data-toggle="dropdown">Video <i class="fa fa-angle-down"></i></a>
+							<div class="dropdown-menu mega-menu-content clearfix">
+								<div class="mega-menu-content-inner">
+									<div class="row">
+										<div class="col">
+											<div class="post-block-style clearfix">
+												<div class="post-thumb">
+													<img class="img-fluid" src="img/tennis1-450x270.jpg" alt="" />
+													<a class="popup" href="">
+														<div class="video-icon">
+															<i class="fa fa-play"></i>
+														</div>
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Netcix cuts out the chill with an integrated...</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post Block style end -->
+										</div><!-- Col 1 end -->
+
+										<div class="col">
+											<div class="post-block-style clearfix">
+												<div class="post-thumb">
+													<img class="img-fluid" src="img/football1-450x270.jpg" alt="" />
+													<a class="popup" href="#">
+														<div class="video-icon">
+															<i class="fa fa-play"></i>
+														</div>
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Netcix cuts out the chill with an integrated...</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post Block style end -->
+										</div><!-- Col 2 end -->
+
+										<div class="col">
+											<div class="post-block-style clearfix">
+												<div class="post-thumb">
+													<img class="img-fluid" src="img/basketball1-450x270.jpg" alt="" />
+													<a class="popup" href="https://www.youtube.com/embed/DQNDcxRo-2M?autoplay=1&amp;loop=1">
+														<div class="video-icon">
+															<i class="fa fa-play"></i>
+														</div>
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">TG G6 will have dual 13-megapixel cameras...</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post Block style end -->
+										</div><!-- Col 3 end -->
+										<div class="col">
+											<div class="post-block-style clearfix">
+												<div class="post-thumb">
+													<img class="img-fluid" src="img/soccer-300x180.jpg" alt="" />
+													<a class="popup" href="https://www.youtube.com/embed/DQNDcxRo-2M?autoplay=1&amp;loop=1">
+														<div class="video-icon">
+															<i class="fa fa-play"></i>
+														</div>
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">TG G6 will have dual 13-megapixel cameras...</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post Block style end -->
+										</div><!-- Col 3 end -->
+										<div class="col">
+											<div class="post-block-style clearfix">
+												<div class="post-thumb">
+													<img class="img-fluid" src="img/tennis-300x180.jpg" alt="" />
+													<a class="popup" href="https://www.youtube.com/embed/DQNDcxRo-2M?autoplay=1&amp;loop=1">
+														<div class="video-icon">
+															<i class="fa fa-play"></i>
+														</div>
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Netcix cuts out the chill with an integrated...</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post Block style end -->
+										</div><!-- Col 4 end -->
+									</div><!-- Post block row end -->
+								</div>
+
+							</div><!-- Mega menu content end -->
+						</li><!-- Video menu end -->
+
+						
+						<li class="nav-item">
+							<a class="nav-link" href="">Sports</a>
+						</li>
+						
+					</ul>
+				</div>
+				<div class="nav-search">
+					<button type="button" id="search-btn">
+						<i class="fa fa-search"></i>
+						</span>
+				</div><!-- Search end -->
+				<div class="social">
+					<a href="#"><i class="fab fa-facebook-f"></i></a>
+					<a href="#"><i class="fab fa-twitter"></i></a>
+				</div>
+				<div class="search-block" style="display: none;">
+					<input type="text" class="form-control" placeholder="Type what you want and enter">
+				</div><!-- Site search end -->
+			</div>
+		</nav>
+			<section class="ad_section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="ad_row_area">
+							<h1>RESPONSIVE LEADERBOARD AD AREA</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="block-wrapper">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-sm-4 col-md-3 order-md-1 order-2 common_action">
+						<div class="left_sidebar">
+							<div class="sidebar-widget">
+								<h3 class="widget-title">LATEST NEWS</h3>
+								<div class="list-post-block">
+									<ul class="list-post">
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/car2-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/couple-fashion-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-80x80.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Sports</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Only three players have a winning record against Rafael Nadal</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+									</ul><!-- List post end -->
+								</div><!-- List post block end -->
+							</div>
+							<div class="load_more">
+								<a href="">More Latest News</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-8 col-md-6 order-md-2 order-1 common_action">
+						<div class="content_middle">
+							<div class="news_style_1">
+								<div class="post-overaly-style last clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/woman-beach2-1024x614.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-content">
+										<a class="post-cat" href="#">Business</a>
+										<h2 class="post-title">
+											<a href="#">Powerfully Simple</a>
+										</h2>
+										<div class="post-meta">
+											<span class="post-short_des">Flex Mag: Powerfully simple WordPress theme</span>
+										</div>
+									</div><!-- Post content end -->
+								</div><!-- Post Overaly Article end -->
+								<div class="list-post-block">
+									<ul class="list-post row">
+										<li class="col-md-4">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/woman-jeans.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-info">
+													<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+													<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+												</div>
+												<div class="post-meta">
+													<span class="post-date">Fashion</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Yes, there are now jeans that can charge your phone</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="col-md-4">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/music-dj-450x270.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-info">
+													<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+													<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+												</div>
+												<div class="post-meta">
+													<span class="post-date">Fashion</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">5 ’Straight Outta Compton’ cameos that will make you do a double take</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+										<li class="col-md-4">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/interview-450x270.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-info">
+													<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+													<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+												</div>
+												<div class="post-meta">
+													<span class="post-date">Fashion</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Google’s Alphabet rollout could still be a Qwikster-like farce</a>
+													</h2>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+
+									</ul><!-- List post end -->
+								</div><!-- List post block end -->
+							</div>
+							<div class="news_style_2">
+								<h3 class="widget-title">LATEST NEWS</h3>
+								<div class="post-overaly-style clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/man-hat-300x180.jpg" alt="">
+										</a>
+									</div>
+
+									<div class="post-content">
+										<h2 class="post-title">
+											<a href="#">10 Hdrenaline fuelled activities that will chase the post...</a>
+										</h2>
+										<div class="post-meta">
+											<span class="post-date">Mar 03, 2017</span>
+										</div>
+									</div><!-- Post content end -->
+								</div><!-- Post Overaly Article end -->
+
+								<div class="list-post-block">
+									<ul class="list-post">
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/scoreboard-300x180.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Entertainment</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Tacos ditched the naked chicken chalupa, so here's how to make </a>
+													</h2>
+													<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et...</p>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 1 end -->
+
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-450x270.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Entertainment</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">That wearable on your wrist could soon track your health as well…</a>
+													</h2>
+													<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et...</p>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 2 end -->
+
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-450x270.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Entertainment</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Early tourists choices to the sea of Maldives in fancy dresses an…</a>
+													</h2>
+													<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et...</p>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 3 end -->
+
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-450x270.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Entertainment</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Science meets architecture in robotically coven, solar-active str…</a>
+													</h2>
+													<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et...</p>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 4 end -->
+										<li class="clearfix">
+											<div class="post-block-style post-float clearfix">
+												<div class="post-thumb">
+													<a href="#">
+														<img class="img-fluid" src="img/tennis1-450x270.jpg" alt="">
+													</a>
+												</div><!-- Post thumb end -->
+												<div class="post-meta">
+													<span class="post-date">Entertainment</span>
+												</div>
+												<div class="post-content">
+													<h2 class="post-title title-small">
+														<a href="#">Science meets architecture in robotically coven, solar-active str…</a>
+													</h2>
+													<p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et...</p>
+												</div><!-- Post content end -->
+											</div><!-- Post block style end -->
+										</li><!-- Li 4 end -->
+
+									</ul><!-- List post end -->
+								</div><!-- List post block end -->
+								<div class="load_more">
+									<a href="">More Posts</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-3 order-md-3 order-3 common_action">
+						<div class="right_sidebar">
+							<div class="sidebar-widget">
+								<h3 class="widget-title">MOST POPULAR</h3>
+								<div class="post-block-style post-grid clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/celebrity1-300x180.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-info">
+										<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+										<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+									</div>
+									<div class="post-meta">
+										<span class="post-date">Fashion</span>
+									</div>
+									<div class="post-content">
+										<h2 class="post-title title-large">
+											<a href="#">Kylie Jenner was paid six figures to attend her own 18th birthday party</a>
+										</h2>
+									</div><!-- Post content end -->
+								</div>
+								<div class="post-block-style post-grid clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/celebrity1-300x180.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-info">
+										<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+										<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+									</div>
+									<div class="post-meta">
+										<span class="post-date">Fashion</span>
+									</div>
+									<div class="post-content">
+										<h2 class="post-title title-large">
+											<a href="#">Kylie Jenner was paid six figures to attend her own 18th birthday party</a>
+										</h2>
+									</div><!-- Post content end -->
+								</div>
+								<div class="post-block-style post-grid clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/celebrity1-300x180.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-info">
+										<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+										<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+									</div>
+									<div class="post-meta">
+										<span class="post-date">Fashion</span>
+									</div>
+									<div class="post-content">
+										<h2 class="post-title title-large">
+											<a href="#">Kylie Jenner was paid six figures to attend her own 18th birthday party</a>
+										</h2>
+									</div><!-- Post content end -->
+								</div>
+								<div class="post-block-style post-grid clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/celebrity1-300x180.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-info">
+										<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+										<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+									</div>
+									<div class="post-meta">
+										<span class="post-date">Fashion</span>
+									</div>
+									<div class="post-content">
+										<h2 class="post-title title-large">
+											<a href="#">Kylie Jenner was paid six figures to attend her own 18th birthday party</a>
+										</h2>
+									</div><!-- Post content end -->
+								</div>
+								<div class="post-block-style post-grid clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/celebrity1-300x180.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-info">
+										<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+										<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+									</div>
+									<div class="post-meta">
+										<span class="post-date">Fashion</span>
+									</div>
+									<div class="post-content">
+										<h2 class="post-title title-large">
+											<a href="#">Kylie Jenner was paid six figures to attend her own 18th birthday party</a>
+										</h2>
+									</div><!-- Post content end -->
+								</div>
+								<div class="post-block-style post-grid clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/celebrity1-300x180.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-info">
+										<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+										<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+									</div>
+									<div class="post-meta">
+										<span class="post-date">Fashion</span>
+									</div>
+									<div class="post-content">
+										<h2 class="post-title title-large">
+											<a href="#">Kylie Jenner was paid six figures to attend her own 18th birthday party</a>
+										</h2>
+									</div><!-- Post content end -->
+								</div>
+								<div class="post-block-style post-grid clearfix">
+									<div class="post-thumb">
+										<a href="#">
+											<img class="img-fluid" src="img/celebrity1-300x180.jpg" alt="">
+										</a>
+									</div>
+									<div class="post-info">
+										<a class="post-view" href="#"><i class="fa fa-eye-slash" aria-hidden="true"></i> 162.9K</a>
+										<a class="post-view" href="#"><i class="fa fa-comment" aria-hidden="true"></i> 10</a>
+									</div>
+									<div class="post-meta">
+										<span class="post-date">Fashion</span>
+									</div>
+									<div class="post-content">
+										<h2 class="post-title title-large">
+											<a href="#">Kylie Jenner was paid six figures to attend her own 18th birthday party</a>
+										</h2>
+									</div><!-- Post content end -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="ad_section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="ad_row_area">
+							<h1>RESPONSIVE LEADERBOARD AD AREA</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<footer id="footer" class="footer">
+			<div class="footer-main">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-4 col-sm-12 footer-widget">
+							<div class="textt-block">
+								<div class="footer-info">
+									<div class="footer-info-content">
+										<div class="footer-logo">
+											<img class="img-fluid" src="img/logo-foot.png" alt="" />
+										</div>
+										<p>Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem? The theme is part of the best blog/magazine WordPress Themes on PremiumCoding.</p>
+									</div>
+									<ul class="unstyled footer-social">
+										<li>
+											<a title="Rss" href="#">
+												<span class="social-icon"><i class="fas fa-rss"></i></span>
+											</a>
+											<a title="Facebook" href="#">
+												<span class="social-icon"><i class="fab fa-facebook-f"></i></span>
+											</a>
+											<a title="Twitter" href="#">
+												<span class="social-icon"><i class="fab fa-twitter"></i></span>
+											</a>
+											<a title="Google+" href="#">
+												<span class="social-icon"><i class="fab fa-google-plus-g"></i></span>
+											</a>
+											<a title="Linkdin" href="#">
+												<span class="social-icon"><i class="fab fa-linkedin-in"></i></span>
+											</a>
+											<a title="Skype" href="#">
+												<span class="social-icon"><i class="fab fa-skype"></i></span>
+											</a>
+											<a title="Dribbble" href="#">
+												<span class="social-icon"><i class="fab fa-dribbble"></i></span>
+											</a>
+											<a title="Skype" href="#">
+												<span class="social-icon"><i class="fab fa-pinterest"></i></span>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</div><!-- List post block end -->
+						</div><!-- Col end -->
+						<div class="col-lg-4 col-sm-12 footer-widget">
+							<h3 class="widget-title">Trending Now</h3>
+							<div class="list-post-block">
+								<ul class="list-post">
+									<li><a href="">Flex Mag: Powerfully simple WordPress theme</a></li><!-- Li 1 end -->
+									<li><a href="">Only three players have a winning record against Rafael Nadal</a></li><!-- Li 1 end -->
+									<li><a href="">Terrell Owens says he doesn’t care about the Hall of Fame</a></li><!-- Li 1 end -->
+									<li><a href="">15 Date Night Outfits Inspired by Celebs</a></li><!-- Li 1 end -->
+								</ul><!-- List post end -->
+							</div><!-- List post block end -->
+						</div><!-- Col end -->
+						<div class="col-lg-4 col-sm-12 footer-widget widget-tags">
+							<h3 class="widget-title">Tags</h3>
+							<ul class="unstyled clearfix">
+								<li><a href="#">gallery</a></li>
+								<li><a href="#">Sports</a></li>
+								<li><a href="#">Featured</a></li>
+								<li><a href="#">Entertainment</a></li>
+								<li><a href="#">Business</a></li>
+								<li><a href="#">Health</a></li>
+								<li><a href="#">Lifestyles</a></li>
+								<li><a href="#">Robotics</a></li>
+								<li><a href="#">Software</a></li>
+								<li><a href="#">Tech</a></li>
+								<li><a href="#">Travel</a></li>
+								<li><a href="#">Video</a></li>
+								<li><a href="#">gallery</a></li>
+								<li><a href="#">Sports</a></li>
+								<li><a href="#">Featured</a></li>
+							</ul>
+						</div><!-- Col end -->
+
+					</div><!-- Row end -->
+				</div><!-- Container end -->
+			</div><!-- Footer main end -->
+
+		</footer><!-- Footer end -->
+
+		<div class="copyright">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-6 col-md-12">
+						<div class="copyright-info">
+							<span>Copyright © 2017 Flex Mag Theme. Theme by MVP Themes, powered by Wordpress.</span>
+						</div>
+					</div>
+
+					<div class="col-lg-6 col-md-12">
+						<div class="footer-menu">
+							<ul class="nav unstyled">
+								<li><a href="#">Site Terms</a></li>
+								<li><a href="#">Privacy</a></li>
+								<li><a href="#">Advertisement</a></li>
+								<li><a href="#">Cookies Policy</a></li>
+								<li><a href="#">Contact Us</a></li>
+							</ul>
+						</div>
+					</div>
+				</div><!-- Row end -->
+
+				<div id="back-to-top" class="back-to-top">
+					<button class="btn btn-primary" title="Back to Top">
+						<i class="fa fa-angle-up"></i>
+						<span class="to-top-text">To Top</span>
+					</button>
+				</div>
+
+			</div><!-- Container end -->
+		</div><!-- Copyright end -->
+
+
+		<!-- Javascript Files
+	================================================== -->
+
+		<!-- initialize jQuery Library -->
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<!-- Popper Jquery -->
+		<script type="text/javascript" src="js/popper.min.js"></script>
+		<!-- Bootstrap jQuery -->
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/metisMenu.min.js"></script>
+		<!-- Template custom -->
+		<script type="text/javascript" src="js/custom.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("#mobile_tab_list a").click(function(){
+					var target=$(this).attr("data-target");
+					$("#mobile_tab_list .col").removeClass("active");
+					$(this).parent().addClass("active");
+					$(".common_action").hide();
+					$("#"+target+"").show();
+					
+				})
+			})
+		</script>
+	</div><!-- Body inner end -->
+</body>
+
+</html>
