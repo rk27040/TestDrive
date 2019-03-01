@@ -1,0 +1,32 @@
+ brCase.Append(@"case
+	                    when UserAgent like '%Edge/%' and useragent not like '%trident%' then 'Edge'
+	                    when UserAgent like '%trident/8.0%' then 'IE11'	/* Compatibility view of Win10 with Internet Explorer 11 */
+	                    when UserAgent like '%trident/7.0%' then 'IE11'
+	                    when UserAgent like '%trident/6.0%' then 'IE10'
+	                    when UserAgent like '%trident/5.0%' then 'IE9'
+	                    when UserAgent like '%trident/4.0%' then 'IE8'
+	                    when UserAgent like '%trident/3.1%' then 'IE7'
+	                    when UserAgent like '%MSIE+7.0%' and useragent not like '%trident%' then 'IE7'
+	                    when UserAgent like '%MSIE+6.0%' and useragent not like '%trident%' then 'IE6'
+	                    when UserAgent like '%MSIE+5.5%' and useragent not like '%trident%' then 'IE5'
+	                    when UserAgent like '%Firefox%' then 'Firefox'
+	                    when UserAgent like '%Chrome%' and UserAgent not like '%Edge/%' then 'Chrome'
+	                    when UserAgent like '%Safari%' and UserAgent not like '%Edge/%' then 'Safari'
+	                    else 'Other'
+                      
+                      
+                      
+                      
+                      osCase.Append(@"case
+	                    when useragent like '%Windows+NT+5.1%' then 'Win-XP' 
+	                    when useragent like '%Windows+NT+5.2%' then 'Win-XP' /* Windows XP Professional x64 */
+	                    when useragent like '%Windows+NT+6.0%' then 'Win-Vista'
+	                    when useragent like '%Windows+NT+6.1%' then 'Win-7'
+	                    when useragent like '%Windows+NT+6.2%' then 'Win-8'
+	                    when useragent like '%Windows+NT+6.3%' then 'Win-8.1'
+	                    when useragent like '%Windows+NT+10.0%' then 'Win-10'
+                        when useragent like '%WM+10.0%' then 'WinMobile-10'
+	                    when useragent like '%Mac+OS+X%' then 'Mac OSX'
+	                    when useragent like '%Linux%' then 'Linux'
+	                    else 'Other'
+                      
