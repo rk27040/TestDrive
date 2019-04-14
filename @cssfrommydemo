@@ -1,0 +1,120 @@
+
+.custom-layout .header-title h5{
+  border-bottom: 2px solid #000;
+  padding-bottom: 5px;
+  margin-bottom: 0;
+}
+
+.custom-layout .table-body ul{
+  margin-bottom: 30px;
+}
+.custom-layout .table-body ul li{
+  padding: 4px 7px;
+  overflow: hidden;
+  
+  
+}
+.custom-layout .table-body ul li:nth-of-type(odd) {
+  background-color: #eee;
+}
+.custom-layout .table-body ul li.product-type{
+  background-color: #DFDFDF;
+  border-bottom: 1px solid #535E63;
+  position: relative;
+  height: 54px;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  line-height: 20px;
+  
+}
+
+.custom-layout .table-body ul .product-type span:first-child {
+  display: none;
+}
+.custom-layout .table-body ul li span{
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  
+}
+.truncate {
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+}
+.ele-clone {
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: fixed;
+}
+@media (min-width: 576px){
+  
+  .custom-layout .table-body ul li span:first-child {
+    display: block;
+    float: left;
+    width: 75%;
+  }
+  .custom-layout .table-body ul li span:last-child{
+    float: right;
+    width: 25%;
+  }
+  .custom-layout .table-body ul .product-type span:first-child {
+    display: block;
+}
+}
+
+@media (min-width: 992px) {
+  .custom-layout .table-body ul:not(:first-child) .product-type span:first-child {
+    display: none;
+  }
+  .custom-layout .table-body ul{
+    padding: 0;
+  }
+  
+  .custom-layout .table-body ul li.product-type span{
+    width: 25%;
+  }
+  
+  .custom-layout .table-body ul li span:last-child {
+    width: 100%;
+    
+  }
+  .custom-layout .table-body .col-lg-2{
+    max-width: 14%;
+    flex: 14%;
+  }
+  .custom-layout .table-body .col-lg-4{
+    max-width: 44%;
+    flex: 44%;
+  }
+  .custom-layout .table-body {
+    margin-left: 0px;
+    margin-right: 0;
+  } 
+  .custom-layout .table-body ul li span:first-child,.custom-layout .table-body ul .product-type span:first-child{
+    width: 67%;
+  }
+  .custom-layout .table-body .col-lg-4 li span:last-child{
+    width: 33%;
+  }
+  .custom-layout .table-body ul li{
+    min-height: 38px;
+  }
+  .custom-layout .table-body ul li span{
+    padding-right: 15px;
+    
+  }
+}
+
+@media (min-width: 1200px) {
+  .custom-layout .table-body ul li span{
+    padding-right: 30px;
+    
+  }
+}
