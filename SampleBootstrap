@@ -1,0 +1,1974 @@
+
+
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style type="text/css">
+    /* BEGIN -- TO BE REMOVED */
+    html {
+        font-size: 12px;
+    }
+
+    .rate-finder-container {
+        padding-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .external-gray-result-container {
+        width: 100%;
+        background-color: #F2F2F2;
+        padding: .65rem;
+    }
+
+    .internal-white-result-container {
+        width: 100%;
+        background-color: #FFFFFF;
+        border: solid 1px #DDDDDD;
+        padding: 1rem;
+    }
+    /* END -- TO BE REMOVED */
+
+    .rf-result-layout {
+        font-family: Verdana, Helvetica, Arial;
+        font-size: .91rem;
+        color: #535e63;
+    }
+
+        .rf-result-layout .header-title {
+            border-bottom: 2px solid #000;
+            padding-bottom: 2px;
+            margin-bottom: 0;
+            font-weight: bold;
+            padding-left: 0px;
+        }
+
+        .rf-result-layout .header-title-m {
+            text-decoration: underline;
+            padding-bottom: 2px;
+            margin-bottom: 0;
+            font-weight: bold;
+            padding-left: 0px;
+            text-align: left;
+        }
+
+        .rf-result-layout .table-body ul {
+            margin-bottom: 2px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+            .rf-result-layout .table-body ul li {
+                overflow: hidden;
+                min-height: 24px;
+            }
+
+                .rf-result-layout .table-body ul li:nth-of-type(odd) {
+                    background-color: #eee;
+                    min-height: 24px;
+                }
+
+    .rf-rate-row {
+        background-color: #9bddff !important;
+        min-height: 24px;
+    }
+
+    .rf-rbp-row {
+        background-color: #D0EDF1 !important;
+        min-height: 24px;
+    }
+
+    .rf-result-layout .table-body ul.list-plain li:nth-of-type(odd) {
+        background-color: transparent;
+        min-height: 24px;
+    }
+
+    .rf-item-multi-line {
+        min-height: 40px !important;
+    }
+
+    .rf-sub-header-item {
+        padding-left: 10px;
+    }
+
+    .rf-result-layout .table-body ul li.product-type {
+        background-color: #DFDFDF;
+        border-bottom: 1px solid #535E63;
+        position: relative;
+        height: 54px;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 0;
+        display: flex;
+        align-items: center;
+        line-height: 20px;
+        font-weight: bold;
+    }
+
+    .rf-result-layout .table-body ul .product-type span:first-child {
+        display: none;
+    }
+
+    .rf-result-layout .table-body ul li.other-type {
+        position: relative;
+        height: 35px;
+        padding-top: 0;
+        padding-bottom: 0;
+        display: flex;
+        align-items: center;
+        line-height: 20px;
+        font-weight: bold;
+    }
+
+    .rf-result-layout .table-body ul .other-type span:first-child {
+        display: none;
+    }
+
+    .rf-result-layout .table-body ul li span {
+        display: block;
+        overflow: hidden;
+
+    }
+
+    .section-list-items span {
+        padding-top: 4px;
+        min-height: 24px;
+        /*padding-left:0px;*/
+    }
+
+    .ele-clone {
+        height: 1px;
+        overflow: hidden;
+        white-space: nowrap;
+        position: fixed;
+    }
+
+    .rf-result-layout .disclaimer {
+        font-size: 8pt;
+        text-align: left;
+        color: grey;
+    }
+
+    .messages-list {
+        font-size: 10px;
+    }
+
+        .messages-list span {
+            display: list-item;
+        }
+
+    @media (max-width: 425px) {
+        .rate-finder-container {
+            padding-top: .5rem;
+            margin-bottom: .5rem;
+        }
+
+        .container {
+            padding-left: .5rem;
+            padding-right: .5rem;
+        }
+
+        #quoteResultContainer {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .internal-white-result-container {
+            padding: .65rem 1.5rem;
+        }
+    }
+
+    @media (min-width: 576px) {
+
+        .rf-result-layout .table-body ul li span:first-child {
+            display: block;
+            float: left;
+            width: 75%;
+        }
+
+        .rf-result-layout .table-body ul li span:last-child {
+            float: right;
+            width: 25%;
+        }
+
+        .rf-result-layout .table-body ul .product-type span:first-child {
+            display: block;
+        }
+
+        .rf-result-layout .table-body ul .other-type span:first-child {
+            display: block;
+        }
+
+        .rf-result-layout .table-body ul li {
+            display: flex;
+            align-items:center;
+        }
+    }
+
+    @media (min-width: 992px) {
+
+        .rf-result-layout .table-body ul:not(:first-child) .product-type span:first-child {
+            display: none;
+        }
+
+        .rf-result-layout .table-body ul:not(:first-child) .other-type span:first-child {
+            display: none;
+        }
+
+        .rf-result-layout .table-body ul {
+            padding: 0;
+        }
+
+            .rf-result-layout .table-body ul li.product-type span {
+                width: 25%;
+            }
+
+            .rf-result-layout .table-body ul li.other-type span {
+                width: 25%;
+            }
+
+            .rf-result-layout .table-body ul li span:last-child {
+                width: 100%;
+            }
+
+        .rf-result-layout .table-body .col-lg-2 {
+            max-width: 14%;
+            flex: 14%;
+        }
+
+        .rf-result-layout .table-body .col-lg-4 {
+            max-width: 44%;
+            flex: 44%;
+        }
+
+        .rf-result-layout .table-body ul li span:first-child, .rf-result-layout .table-body ul .product-type span:first-child {
+            width: 66%;
+        }
+
+        .rf-result-layout .table-body ul li span:first-child, .rf-result-layout .table-body ul .other-type span:first-child {
+            width: 66%;
+        }
+
+        .rf-result-layout .table-body .col-lg-4 li span:last-child {
+            width: 34%;
+        }
+
+        .rf-result-layout .table-body2 .col-lg-2 {
+            max-width:16%;
+            flex: 16%;
+        }
+
+        .rf-result-layout .table-body2 .col-lg-4 {
+            max-width: 36%;
+            flex: 36%;
+        }
+
+        .rf-result-layout .table-body2 ul li span:first-child, .rf-result-layout .table-body2 ul .product-type span:first-child {
+            width: 54%;
+        }
+
+        .rf-result-layout .table-body2 ul li span:first-child, .rf-result-layout .table-body2 ul .other-type span:first-child {
+            width: 54%;
+        }
+
+        .rf-result-layout .table-body2 .col-lg-4 li span:last-child {
+            width: 46%;
+        }
+    
+
+        .rf-result-layout .table-body ul li {
+            height: 26px;
+            line-height:12px;
+        }
+
+        .rf-result-layout .table-body ul li span {
+            padding-right: 0px;
+        }
+
+        .section-list-items span {
+            padding-left: 0px;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .rf-result-layout .table-body ul li span {
+            padding-right: 2px;
+        }
+    }
+</style>
+
+
+ 
+<!-- RATE FINDER CONTAINER -- TO BE REMOVED -->
+<div class="rate-finder-container container">
+    <!-- QUOTE RESULT CONTAINER -- TO BE REMOVED -->
+    <div id="quoteResultContainer" class="col-12">
+        <!-- QUOTE RESULT EXTERNAL GRAY CONTAINER -- TO BE REMOVED --> 
+        <div class="external-gray-result-container">
+            <!-- QUOTE RESULT INTERNAL WHITE CONTAINER -- TO BE REMOVED --> 
+            <div class="internal-white-result-container">
+                <!-- QUOTE RESULT ROW -- TO BE REMOVED --> 
+                <div class="row">
+                    <!-- QUOTE RESULT HTML -- FOR TO BE REMOVED -->
+                    <div id="quote_result" class="col-12">
+                        <!-- QUOTE RESULT -- RAM MARK-UP -->
+
+
+ 
+
+	  <div class="rf-result-layout">
+	 
+      <div class="container">
+	   <!-- Loan Information sction starts -->
+		<div class="row section-list-items">
+								<div class="col-sm-12 col-md-6 col-lg-5">
+						<div class="row">
+							<span class="col-sm-12 col-md-5"><strong>Lender Name</strong></span>
+							<span class="col-sm-12 col-md-7">RESIDENTIAL MORTGAGE, LLC</span>
+						</div>
+					</div>
+
+									<div class="col-sm-12 col-md-6 col-lg-5">
+						<div class="row">
+							<span class="col-sm-12 col-md-5"><strong>Master Policy Number</strong></span>
+							<span class="col-sm-12 col-md-7">0200020001</span>
+						</div>
+					</div>
+
+									<div class="col-sm-12 col-md-6 col-lg-5">
+						<div class="row">
+							<span class="col-sm-12 col-md-5"><strong>Lender Address</strong></span>
+							<span class="col-sm-12 col-md-7">100 CALAIS DRIVE<BR>ANCHORAGE, AK 99503</span>
+						</div>
+					</div>
+
+									<div class="col-sm-12 col-md-6 col-lg-5">
+						<div class="row">
+							<span class="col-sm-12 col-md-5"><strong>Property Address</strong></span>
+							<span class="col-sm-12 col-md-7">1234 TEST DR<BR>ADOLPHUS, KY 40020</span>
+						</div>
+					</div>
+
+					  </div>
+	  <br/>
+	  <!-- Loan Information sction ends -->
+        <div class="row">
+          <div class="col header-title">
+              Rate Results
+          </div>
+        </div>
+		 <div class="row table-body">
+								<ul class="col-md-12 col-lg-4 list-unstyled">				
+						 <li class="product-type">
+															<span class="d-none d-lg-block">&nbsp;</span>
+														<span> Monthly<br>Non-Refundable </span>
+						 </li>
+											<li class=" ">
+							<span class=" "><strong>Premium Payment Type</strong></span>
+							<span>Borrower Paid </span>
+						</li>
+											<li class=" ">
+							<span class=" "><strong>Renewal Type</strong></span>
+							<span>Level </span>
+						</li>
+											<li class=" ">
+							<span class=" "><strong>Coverage Percent</strong></span>
+							<span>12% </span>
+						</li>
+											<li class=" ">
+							<span class=" "><strong>Base Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class=" "><strong>Financed Premium</strong></span>
+							<span> </span>
+						</li>
+											<li class=" ">
+							<span class=" "><strong>Total Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class=" "><strong></strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class=" "><strong>MI Premium</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class=" rf-sub-header-item"><strong>Upfront Payment</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class=" rf-sub-header-item"><strong>Monthly Payment</strong></span>
+							<span>$27.16 </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class=" "><strong>MI Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class=" rf-sub-header-item"><strong>Upfront Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class=" rf-sub-header-item"><strong>Monthly Rate</strong></span>
+							<span>0.162879 % </span>
+						</li>
+											<li class="rf-rbp-row ">
+							<span class=" "><strong>Note Rate</strong></span>
+							<span>5.000% </span>
+						</li>
+											<li class="rf-rate-row rf-item-multi-line ">
+							<span class=" "><strong>Monthly Housing<br/>(P&I w/MI Only)</strong></span>
+							<span>$1,100.86 </span>
+						</li>
+											<li class="rf-rbp-row rf-item-multi-line ">
+							<span class=" "><strong>5 Year Housing<br/>(Monthly P&I w/monthly MI over 5 years)</strong></span>
+							<span>$66,051.60 </span>
+						</li>
+					
+					<!-- For smaller devices, populate rate calculate and reenwal details and hide for desktop views -->
+
+					<div class="d-block d-lg-none">
+								
+								<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Calculation Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span class=""><strong>Base MI Rate</strong></span>
+										<span>0.16 % </span>
+									</li>
+																	<li>
+										<span class=""><strong>Final MI Rate/Payment</strong></span>
+										<span>0.16 % ($26.68) </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>State Tax and Amount (KY)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Monthly Rate/Payment</strong></span>
+										<span>1.80 % ($0.48) </span>
+									</li>
+																	<li>
+										<span class=""><strong>County Tax and Amount (Bell)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span>0.00 % ($0.00) </span>
+									</li>
+																	<li>
+										<span class=""><strong>Municipality Tax Rate (Adolphus)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span>0.00 % ($0.00) </span>
+									</li>
+																</div>
+								<!-- rate calc ends -->
+
+								<!-- For smaller devices, populate rate renewals details and hide for desktop views -->
+
+								<div class="d-block d-lg-none">
+					
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Renewal Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span><strong>Upfront Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Rate</strong></span>
+										<span>0.162879 % </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Rate</strong></span>
+										<span>0.162879 % </span>
+									</li>
+																	<li>
+										<span><strong>Upfront Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Payment</strong></span>
+										<span>$27.16 </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Payment</strong></span>
+										<span>$27.16 </span>
+									</li>
+																<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								</div>
+								
+								<!-- rate renewals ends -->
+
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled">				
+						 <li class="product-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> Deferred Monthly<br>Non-Refundable </span>
+						 </li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Premium Payment Type</strong></span>
+							<span>Borrower Paid </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Renewal Type</strong></span>
+							<span>Level </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Coverage Percent</strong></span>
+							<span>12% </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Base Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>Financed Premium</strong></span>
+							<span> </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Total Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong></strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Premium</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Payment</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Payment</strong></span>
+							<span>$27.16 </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate</strong></span>
+							<span>0.162879 % </span>
+						</li>
+											<li class="rf-rbp-row ">
+							<span class="d-block d-lg-none "><strong>Note Rate</strong></span>
+							<span>5.000% </span>
+						</li>
+											<li class="rf-rate-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>Monthly Housing<br/>(P&I w/MI Only)</strong></span>
+							<span>$1,100.86 </span>
+						</li>
+											<li class="rf-rbp-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>5 Year Housing<br/>(Monthly P&I w/monthly MI over 5 years)</strong></span>
+							<span>$66,051.60 </span>
+						</li>
+					
+					<!-- For smaller devices, populate rate calculate and reenwal details and hide for desktop views -->
+
+					<div class="d-block d-lg-none">
+								
+								<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Calculation Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span class=""><strong>Base MI Rate</strong></span>
+										<span>0.16 % </span>
+									</li>
+																	<li>
+										<span class=""><strong>Final MI Rate/Payment</strong></span>
+										<span>0.16 % ($26.68) </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>State Tax and Amount (KY)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Monthly Rate/Payment</strong></span>
+										<span>1.80 % ($0.48) </span>
+									</li>
+																	<li>
+										<span class=""><strong>County Tax and Amount (Bell)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span>0.00 % ($0.00) </span>
+									</li>
+																	<li>
+										<span class=""><strong>Municipality Tax Rate (Adolphus)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span>0.00 % ($0.00) </span>
+									</li>
+																</div>
+								<!-- rate calc ends -->
+
+								<!-- For smaller devices, populate rate renewals details and hide for desktop views -->
+
+								<div class="d-block d-lg-none">
+					
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Renewal Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span><strong>Upfront Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Rate</strong></span>
+										<span>0.162879 % </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Rate</strong></span>
+										<span>0.162879 % </span>
+									</li>
+																	<li>
+										<span><strong>Upfront Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Payment</strong></span>
+										<span>$27.16 </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Payment</strong></span>
+										<span>$27.16 </span>
+									</li>
+																<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								</div>
+								
+								<!-- rate renewals ends -->
+
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled">				
+						 <li class="product-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> Single<br>Non-Refundable </span>
+						 </li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Premium Payment Type</strong></span>
+							<span>Borrower Paid </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Renewal Type</strong></span>
+							<span>Level </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Coverage Percent</strong></span>
+							<span>12% </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Base Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>Financed Premium</strong></span>
+							<span>$1,079.62 </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Total Loan Amount</strong></span>
+							<span>$201,179.62 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong></strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Premium</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Payment</strong></span>
+							<span>$1,079.62 </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Payment</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate</strong></span>
+							<span>0.539540 % </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rbp-row ">
+							<span class="d-block d-lg-none "><strong>Note Rate</strong></span>
+							<span>5.000% </span>
+						</li>
+											<li class="rf-rate-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>Monthly Housing<br/>(P&I w/MI Only)</strong></span>
+							<span>$1,079.98 </span>
+						</li>
+											<li class="rf-rbp-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>5 Year Housing<br/>(Monthly P&I w/monthly MI over 5 years)</strong></span>
+							<span>$64,798.80 </span>
+						</li>
+					
+					<!-- For smaller devices, populate rate calculate and reenwal details and hide for desktop views -->
+
+					<div class="d-block d-lg-none">
+								
+								<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Calculation Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span class=""><strong>Base MI Rate</strong></span>
+										<span>0.53 % </span>
+									</li>
+																	<li>
+										<span class=""><strong>Final MI Rate/Payment</strong></span>
+										<span>0.53 % ($1,060.53) </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span>0.53 % ($1,060.53) </span>
+									</li>
+																	<li>
+										<span class=""><strong>State Tax and Amount (KY)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span>1.80 % ($19.09) </span>
+									</li>
+																	<li>
+										<span class=""><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>County Tax and Amount (Bell)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span>0.00 % ($0.00) </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Municipality Tax Rate (Adolphus)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span>0.00 % ($0.00) </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																</div>
+								<!-- rate calc ends -->
+
+								<!-- For smaller devices, populate rate renewals details and hide for desktop views -->
+
+								<div class="d-block d-lg-none">
+					
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Renewal Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span><strong>Upfront Rate</strong></span>
+										<span>0.539540 % </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Upfront Payment</strong></span>
+										<span>$1,079.62 </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Payment</strong></span>
+										<span> </span>
+									</li>
+																<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								</div>
+								
+								<!-- rate renewals ends -->
+
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled">				
+						 <li class="product-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> Split<br>Non-Refundable </span>
+						 </li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Premium Payment Type</strong></span>
+							<span>Borrower Paid </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Renewal Type</strong></span>
+							<span>Level </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Coverage Percent</strong></span>
+							<span>12% </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Base Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>Financed Premium</strong></span>
+							<span> </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Total Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong></strong></span>
+							<span>Rate not found for loan values </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Premium</strong></span>
+							<span>Rate Not Available </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Payment</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Payment</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rbp-row ">
+							<span class="d-block d-lg-none "><strong>Note Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>Monthly Housing<br/>(P&I w/MI Only)</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rbp-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>5 Year Housing<br/>(Monthly P&I w/monthly MI over 5 years)</strong></span>
+							<span> </span>
+						</li>
+					
+					<!-- For smaller devices, populate rate calculate and reenwal details and hide for desktop views -->
+
+					<div class="d-block d-lg-none">
+								
+								<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Calculation Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span class=""><strong>Base MI Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Final MI Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>State Tax and Amount (KY)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>County Tax and Amount (Bell)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Municipality Tax Rate (Adolphus)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																</div>
+								<!-- rate calc ends -->
+
+								<!-- For smaller devices, populate rate renewals details and hide for desktop views -->
+
+								<div class="d-block d-lg-none">
+					
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Renewal Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span><strong>Upfront Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Rate</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Upfront Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Payment</strong></span>
+										<span> </span>
+									</li>
+																<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								</div>
+								
+								<!-- rate renewals ends -->
+
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled">				
+						 <li class="product-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> FHA </span>
+						 </li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Premium Payment Type</strong></span>
+							<span>Borrower Paid </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Renewal Type</strong></span>
+							<span>Declining </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Coverage Percent</strong></span>
+							<span>12% </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Base Loan Amount</strong></span>
+							<span>$200,100.00 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>Financed Premium</strong></span>
+							<span>$3,564.78 </span>
+						</li>
+											<li class=" ">
+							<span class="d-block d-lg-none "><strong>Total Loan Amount</strong></span>
+							<span>$203,664.78 </span>
+						</li>
+											<li class=" d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong></strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Premium</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Payment</strong></span>
+							<span>$3,501.75 </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Payment</strong></span>
+							<span>$133.40 </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none "><strong>MI Rate</strong></span>
+							<span> </span>
+						</li>
+											<li class="rf-rate-row d-none d-lg-block">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate</strong></span>
+							<span>1.750000 % </span>
+						</li>
+											<li class="rf-rate-row ">
+							<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate</strong></span>
+							<span>0.800000 % </span>
+						</li>
+											<li class="rf-rbp-row ">
+							<span class="d-block d-lg-none "><strong>Note Rate</strong></span>
+							<span>4.900% </span>
+						</li>
+											<li class="rf-rate-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>Monthly Housing<br/>(P&I w/MI Only)</strong></span>
+							<span>$1,214.30 </span>
+						</li>
+											<li class="rf-rbp-row rf-item-multi-line ">
+							<span class="d-block d-lg-none "><strong>5 Year Housing<br/>(Monthly P&I w/monthly MI over 5 years)</strong></span>
+							<span>$72,858.00 </span>
+						</li>
+					
+					<!-- For smaller devices, populate rate calculate and reenwal details and hide for desktop views -->
+
+					<div class="d-block d-lg-none">
+								
+								<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Calculation Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span class=""><strong>Base MI Rate</strong></span>
+										<span>0.80 % </span>
+									</li>
+																	<li>
+										<span class=""><strong>Final MI Rate/Payment</strong></span>
+										<span>0.80 % ($133.40) </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span>1.75 % ($3,501.75) </span>
+									</li>
+																	<li>
+										<span class=""><strong>State Tax and Amount (KY)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>County Tax and Amount (Bell)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class=""><strong>Municipality Tax Rate (Adolphus)</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																	<li>
+										<span class="rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+										<span> </span>
+									</li>
+																</div>
+								<!-- rate calc ends -->
+
+								<!-- For smaller devices, populate rate renewals details and hide for desktop views -->
+
+								<div class="d-block d-lg-none">
+					
+								<br/>
+									 <div class="header-title-m">
+										<span>Essent Rate Renewal Detail</span>
+									 </div>
+				  
+					
+																	<li>
+										<span><strong>Upfront Rate</strong></span>
+										<span>1.750000 % </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Rate</strong></span>
+										<span>0.800000 % </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Rate</strong></span>
+										<span>0.800000 % </span>
+									</li>
+																	<li>
+										<span><strong>Upfront Payment</strong></span>
+										<span>$3,501.75 </span>
+									</li>
+																	<li>
+										<span><strong>Year 1-10 Payment</strong></span>
+										<span>$133.40 </span>
+									</li>
+																	<li>
+										<span><strong>Year 11 through Term Payment</strong></span>
+										<span>$133.40 </span>
+									</li>
+																<div class="messages-list">
+									<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+								</div>
+								</div>
+								
+								<!-- rate renewals ends -->
+
+					</ul>
+					</div>
+		<div class="d-none d-lg-block">
+			<div class="messages-list">
+				<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+			</div>
+			 <br/>
+			 <div class="row">
+				  <div class="col header-title">
+					  Essent Rate Calculation Detail
+				  </div>
+			 </div>
+			 <div class="row table-body">
+										<ul class="col-md-12 col-lg-4 list-unstyled">		
+					
+													<li>
+								<span class=" "><strong>Base MI Rate</strong></span>
+								<span>0.16 % </span>
+							</li>
+													<li>
+								<span class=" "><strong>Final MI Rate/Payment</strong></span>
+								<span>0.16 % ($26.68) </span>
+							</li>
+													<li>
+								<span class=" "><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=" "><strong>State Tax and Amount (KY)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=" "><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=" "><strong>Monthly Rate/Payment</strong></span>
+								<span>1.80 % ($0.48) </span>
+							</li>
+													<li>
+								<span class=" "><strong>County Tax and Amount (Bell)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=" rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=" rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span>0.00 % ($0.00) </span>
+							</li>
+													<li>
+								<span class=" "><strong>Municipality Tax Rate (Adolphus)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=" rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=" rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span>0.00 % ($0.00) </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">		
+					
+													<li>
+								<span class="d-block d-lg-none "><strong>Base MI Rate</strong></span>
+								<span>0.16 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Final MI Rate/Payment</strong></span>
+								<span>0.16 % ($26.68) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>State Tax and Amount (KY)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Monthly Rate/Payment</strong></span>
+								<span>1.80 % ($0.48) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>County Tax and Amount (Bell)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span>0.00 % ($0.00) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Municipality Tax Rate (Adolphus)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span>0.00 % ($0.00) </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">		
+					
+													<li>
+								<span class="d-block d-lg-none "><strong>Base MI Rate</strong></span>
+								<span>0.53 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Final MI Rate/Payment</strong></span>
+								<span>0.53 % ($1,060.53) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span>0.53 % ($1,060.53) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>State Tax and Amount (KY)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span>1.80 % ($19.09) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>County Tax and Amount (Bell)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span>0.00 % ($0.00) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Municipality Tax Rate (Adolphus)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span>0.00 % ($0.00) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">		
+					
+													<li>
+								<span class="d-block d-lg-none "><strong>Base MI Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Final MI Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>State Tax and Amount (KY)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>County Tax and Amount (Bell)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Municipality Tax Rate (Adolphus)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">		
+					
+													<li>
+								<span class="d-block d-lg-none "><strong>Base MI Rate</strong></span>
+								<span>0.80 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Final MI Rate/Payment</strong></span>
+								<span>0.80 % ($133.40) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span>1.75 % ($3,501.75) </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>State Tax and Amount (KY)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>County Tax and Amount (Bell)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none "><strong>Municipality Tax Rate (Adolphus)</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Upfront Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none rf-sub-header-item"><strong>Monthly Rate/Payment</strong></span>
+								<span> </span>
+							</li>
+						
+						</ul>
+							</div>
+			<br/>
+			<div class="row">
+				  <div class="col header-title">
+					  Essent Rate Renewal Detail
+				  </div>
+			</div>
+			 <div class="row table-body">
+										<ul class="col-md-12 col-lg-4 list-unstyled">	
+					
+													<li>
+								<span class=""><strong>Upfront Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=""><strong>Year 1-10 Rate</strong></span>
+								<span>0.162879 % </span>
+							</li>
+													<li>
+								<span class=""><strong>Year 11 through Term Rate</strong></span>
+								<span>0.162879 % </span>
+							</li>
+													<li>
+								<span class=""><strong>Upfront Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class=""><strong>Year 1-10 Payment</strong></span>
+								<span>$27.16 </span>
+							</li>
+													<li>
+								<span class=""><strong>Year 11 through Term Payment</strong></span>
+								<span>$27.16 </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">	
+					
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Rate</strong></span>
+								<span>0.162879 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Rate</strong></span>
+								<span>0.162879 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Payment</strong></span>
+								<span>$27.16 </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Payment</strong></span>
+								<span>$27.16 </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">	
+					
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Rate</strong></span>
+								<span>0.539540 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Payment</strong></span>
+								<span>$1,079.62 </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Payment</strong></span>
+								<span> </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">	
+					
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Rate</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Payment</strong></span>
+								<span> </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Payment</strong></span>
+								<span> </span>
+							</li>
+						
+						</ul>
+										<ul class="col-md-12 col-lg-2 list-unstyled">	
+					
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Rate</strong></span>
+								<span>1.750000 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Rate</strong></span>
+								<span>0.800000 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Rate</strong></span>
+								<span>0.800000 % </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Upfront Payment</strong></span>
+								<span>$3,501.75 </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 1-10 Payment</strong></span>
+								<span>$133.40 </span>
+							</li>
+													<li>
+								<span class="d-block d-lg-none"><strong>Year 11 through Term Payment</strong></span>
+								<span>$133.40 </span>
+							</li>
+						
+						</ul>
+							</div>
+			<div class="messages-list">
+				<div><span>MI premium and rate include taxes/surcharges, if applicable.</span><span>Level Renewal was chosen:  MI premium and rate including taxes/surcharges, if applicable.  MI premium payment and rate remains the same through year 10.</span><span>Declining Renewal was chosen:  MI monthly premium remains the same throughout the term of the loan.</span></div><div class='KyStateMessage'></div>
+			</div>
+			
+			
+		</div>
+		<!-- Mortgage Information sction starts -->
+		<div class="row">
+          <div class="col header-title">
+             Mortgage Information
+          </div>
+        </div>
+		<div class="row section-list-items">
+					
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>AUS Recommendation</strong></span>
+							<span class="col-sm-12 col-md-5">DU Approve/Eligible</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Loan Purpose</strong></span>
+							<span class="col-sm-12 col-md-5">Purchase</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Amortization Type</strong></span>
+							<span class="col-sm-12 col-md-5">Fixed</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Amortization Term</strong></span>
+							<span class="col-sm-12 col-md-5">360</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Loan Level Credit Score</strong></span>
+							<span class="col-sm-12 col-md-5">802</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>LTV</strong></span>
+							<span class="col-sm-12 col-md-5">85.00%</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>CLTV</strong></span>
+							<span class="col-sm-12 col-md-5">85.00%</span>
+						</div>
+					</div>
+
+						</div>
+		
+		<!-- Mortgage Information sction ends -->
+
+		<br/>
+	
+		<!-- Borrower Information sction starts -->
+
+		<div class="row">
+          <div class="col header-title">
+             Borrower Information
+          </div>
+        </div>
+		 <div class="row table-body table-body2">
+								<ul class="col-md-12 col-lg-4 list-unstyled list-plain">				
+						 <li class="other-type">
+															<span class="d-none d-lg-block">&nbsp;</span>
+														<span> Primary Borrower </span>
+						 </li>
+											<li>
+							<span class=""><strong>Credit Score</strong></span>
+							<span>802 </span>
+						</li>
+											<li>
+							<span class=""><strong>Self Employed?</strong></span>
+							<span>No </span>
+						</li>
+											<li>
+							<span class=""><strong>Prior Bankruptcy?</strong></span>
+							<span>No </span>
+						</li>
+					
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled list-plain">				
+						 <li class="other-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> Co Borrower </span>
+						 </li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Credit Score</strong></span>
+							<span>803 </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Self Employed?</strong></span>
+							<span>No </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Prior Bankruptcy?</strong></span>
+							<span>No </span>
+						</li>
+					
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled list-plain">				
+						 <li class="other-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> Co Borrower </span>
+						 </li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Credit Score</strong></span>
+							<span>804 </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Self Employed?</strong></span>
+							<span>No </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Prior Bankruptcy?</strong></span>
+							<span>No </span>
+						</li>
+					
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled list-plain">				
+						 <li class="other-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> Co Borrower </span>
+						 </li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Credit Score</strong></span>
+							<span>805 </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Self Employed?</strong></span>
+							<span>No </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Prior Bankruptcy?</strong></span>
+							<span>No </span>
+						</li>
+					
+					</ul>
+								<ul class="col-md-12 col-lg-2 list-unstyled list-plain">				
+						 <li class="other-type">
+															<div class="d-none d-lg-block"><span>&nbsp;</span></div>
+														<span> Co Borrower </span>
+						 </li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Credit Score</strong></span>
+							<span>806 </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Self Employed?</strong></span>
+							<span>No </span>
+						</li>
+											<li>
+							<span class="d-block d-lg-none"><strong>Prior Bankruptcy?</strong></span>
+							<span>No </span>
+						</li>
+					
+					</ul>
+			
+		</div>
+
+		<!-- Borrower Information sction ends -->
+
+		<!-- Property Information sction starts -->
+		<div class="row">
+          <div class="col header-title">
+              Property Information
+          </div>
+        </div>
+		<div class="row section-list-items">
+					
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>State</strong></span>
+							<span class="col-sm-12 col-md-5">KY</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>County</strong></span>
+							<span class="col-sm-12 col-md-5">Bell</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Occupancy</strong></span>
+							<span class="col-sm-12 col-md-5">Primary Residence</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Zip Code</strong></span>
+							<span class="col-sm-12 col-md-5">40020</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Property Type</strong></span>
+							<span class="col-sm-12 col-md-5">Detached</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Number Of Units</strong></span>
+							<span class="col-sm-12 col-md-5">1</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>City</strong></span>
+							<span class="col-sm-12 col-md-5">Adolphus</span>
+						</div>
+					</div>
+
+						</div>
+		
+		<!-- Property Information sction ends -->
+		<br/>
+		<!-- FHA Information sction starts -->
+		<div class="row">
+          <div class="col header-title">
+             FHA Information
+          </div>
+        </div>
+		<div class="row section-list-items">
+					
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>FHA Interest Rate</strong></span>
+							<span class="col-sm-12 col-md-5">4.900%</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>Is FHA Premium Financed?</strong></span>
+							<span class="col-sm-12 col-md-5">Yes</span>
+						</div>
+					</div>
+
+						
+					<div class="col-sm-12 col-md-6 col-lg-4">
+						<div class="row">
+							<span class="col-sm-12 col-md-7"><strong>FHA LTV</strong></span>
+							<span class="col-sm-12 col-md-5">85.00%</span>
+						</div>
+					</div>
+
+						</div>
+		
+		<!-- FHA Information sction ends -->
+
+		 <br />
+        <div class="row">
+            <div class="col-sm-12 p-0">
+                <b>Discliamer</b><br>
+                <div class='disclaimer'>
+					A rate quote and/or eligibility indication is only an estimate based on certain information you provided and may make assumptions based on information you did not provide. Neither a quote nor an indication nor the output constitutes a contract, binder or agreement to extend insurance coverage.  To apply for insurance, please complete an Application for Mortgage Insurance or submit an Application electronically.  Coverage is subject to appropriate Essent underwriting guidelines and rates then in effect; rates may vary as a result of the application of state taxes.  Essent will honor the premium rate shown for this Quote ID for 90 days provided the loan attributes listed above and the coverage you requested do not change.   For availability, see the State Availability Chart on the Rates & Guidelines page at essent.us.  FHA premium rates, when displayed, were effective as of January 26, 2015.  Visit fha.gov for the most recent information.  This comparison was constructed using publicly available information.  Although Essent believes the FHA estimates provided are accurate and up-to-date, these results are not warranted.  For additional information, please contact your Essent account representative or our EssentCONNECT department by telephone at 1-855-282-1483 or send an email to EssentCONNECT@essent.us. 
+                </div>
+            </div>
+        </div>
+      </div>
+	  
+    </div>
+  
+	<br/>
+
+	
+
+
+
+	 </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
