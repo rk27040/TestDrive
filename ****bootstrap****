@@ -1,0 +1,25 @@
+Converting from 3.x or 4 Alpha to Bootstrap 4 Beta
+Here’s the complete list of changes you can make to swap out the deprecated hidden-* and visible-* classes…
+
+* `hidden-xs-down` = `d-none d-sm-block`
+* `hidden-sm-down` = `d-none d-md-block`
+* `hidden-md-down` = `d-none d-lg-block`
+* `hidden-lg-down` = `d-none d-xl-block`
+* `hidden-xl-down` = `d-none` (always hidden)
+* `hidden-xs-up` = `d-none` (always hidden)
+* `hidden-sm-up` = `d-sm-none`
+* `hidden-md-up` = `d-md-none`
+* `hidden-lg-up` = `d-lg-none`
+* `hidden-xl-up` = `d-xl-none`
+* `hidden-xs` (only) = `d-none d-sm-block` (same as `hidden-xs-down`)
+* `hidden-sm` (only) = `d-block d-sm-none d-md-block`
+* `hidden-md` (only) = `d-block d-md-none d-lg-block`
+* `hidden-lg` (only) = `d-block d-lg-none d-xl-block`
+* `hidden-xl` (only) = `d-block d-xl-none`
+* `visible-xs` (only) = `d-block d-sm-none`
+* `visible-sm` (only) = `d-none d-sm-block d-md-none`
+* `visible-md` (only) = `d-none d-md-block d-lg-none`
+* `visible-lg` (only) = `d-none d-lg-block d-xl-none`
+* `visible-xl` (only) = `d-none d-xl-block`
+
+Remember, d-*-block adds display:block for that viewport, but this can be replaced with any of CSS display properties such as d-table-cell, d-*-inline, d-*-flex, etc.. depending on the display type of the element.
