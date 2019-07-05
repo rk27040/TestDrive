@@ -1,0 +1,314 @@
+//Helper
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Mvc.Html;
+
+namespace Helper.Extensions
+{
+    public static class MyHelpers
+    {
+        public enum AjaxMethods
+        {
+            GET,
+            POST
+        }
+        public static MvcHtmlString AsyncPartial(this HtmlHelper helper, string controller, string action,string previewPartialName=null, AjaxMethods method = AjaxMethods.GET, TempDataDictionary TempData=null)
+        {
+            string xo = $"x_{controller}_{action}";
+            string js = $"function get_{controller}_{action}()" +
+                            "{" +
+                                    $"var d= document.getElementById('div-{controller}-{action}'); "+
+                                    $"var ds= document.getElementById('div-{controller}-{action}-sh'); "+
+
+                                    "var "+xo+" = new XMLHttpRequest();" +
+                                    xo+".onreadystatechange = function() {" +
+                                        "  if ("+xo+".readyState == XMLHttpRequest.DONE ) {" +
+                                            "  if ("+xo+".status == 200) {" +
+                                                 $"d.innerHTML = "+xo+".responseText.replace(/data-partial-refresh/ig, 'data-partial-refresh onclick=\"get_{controller}_{action}()\"');" +
+                                                  $"ds.style.display='none';" +
+                                                  $"d.style.display='block';" +
+                                            "  }" +
+                                            "else if ("+xo+".status == 400) {" +
+                                             "      alert('Error 400');" +
+                                             "    }" +
+                                             "else{" +
+                                             "      alert('Generic error');" +
+                                             "    }" +
+                                         "  }" +
+                                    "};" +
+                                      $"ds.style.display='block';" +
+                                      $"d.style.display='none';" +
+                                    xo+$".open('{method}', '/{controller}/{action}', true);" +
+                                    xo+".send();" +
+                             "};" +
+                             $"get_{controller}_{action}();";
+
+            MvcHtmlString StringPartial = PartialExtensions.Partial(helper, previewPartialName ==null? action + "_preview":previewPartialName);
+
+            if (TempData != null)
+            {
+                TempData["script"] += js;
+                return MvcHtmlString.Create($"<div  id='div-{controller}-{action}'>" + StringPartial.ToString() + "</div>" +
+                                       $"<div  id='div-{controller}-{action}-sh' style='display:none'>" + StringPartial.ToString() + "</div>"
+                                       );
+            }
+            else
+            {
+                return MvcHtmlString.Create($"<div  id='div-{controller}-{action}'>" + StringPartial.ToString() + "</div>" +
+                                      $"<div  id='div-{controller}-{action}-sh' style='display:none'>" + StringPartial.ToString() + "</div>"+
+                                      "<script>"+js+"</script>");
+            }
+          
+        }
+
+        public static MvcHtmlString AsyncPartialAutoRefresh(this HtmlHelper helper, string controller, string action, int refreshTimeInSeconds, string previewPartialName = null, AjaxMethods method = AjaxMethods.GET, TempDataDictionary TempData = null)
+        {
+
+            string fn = $"get_{controller}_{action}()"; 
+            string ts = "window.setInterval(function(){ " + fn + "; },"  + (1000*refreshTimeInSeconds).ToString() + ");";
+            string xo = $"x_{controller}_{action}";
+            string js = $"function get_{controller}_{action}()" +
+                            "{" +
+                                    $"var d= document.getElementById('div-{controller}-{action}'); " +
+                                    $"var ds= document.getElementById('div-{controller}-{action}-sh'); " +
+
+                                    "var " + xo + " = new XMLHttpRequest();" +
+                                    xo + ".onreadystatechange = function() {" +
+                                        "  if (" + xo + ".readyState == XMLHttpRequest.DONE ) {" +
+                                            "  if (" + xo + ".status == 200) {" +
+                                                 $"d.innerHTML = " + xo + ".responseText.replace(/data-partial-refresh/ig, 'data-partial-refresh onclick=\"get_{controller}_{action}()\"');" +
+                                                  $"ds.style.display='none';" +
+                                                  $"d.style.display='block';" +
+                                            "  }" +
+                                            "else if (" + xo + ".status == 400) {" +
+                                             "      alert('Error 400');" +
+                                             "    }" +
+                                             "else{" +
+                                             "      alert('Generic error');" +
+                                             "    }" +
+                                         "  }" +
+                                    "};" +
+                                      $"ds.style.display='block';" +
+                                      $"d.style.display='none';" +
+                                    xo + $".open('{method}', '/{controller}/{action}', true);" +
+                                    xo + ".send();" +
+                             "};" +
+                             $"get_{controller}_{action}();";
+            js = js + "    " + ts;
+            MvcHtmlString StringPartial = PartialExtensions.Partial(helper, previewPartialName == null ? action + "_preview" : previewPartialName);
+
+            if (TempData != null)
+            {
+                TempData["script"] += js;
+                return MvcHtmlString.Create($"<div  id='div-{controller}-{action}'>" + StringPartial.ToString() + "</div>" +
+                                       $"<div  id='div-{controller}-{action}-sh' style='display:none'>" + StringPartial.ToString() + "</div>"
+                                       );
+            }
+            else
+            {
+                return MvcHtmlString.Create($"<div  id='div-{controller}-{action}'>" + StringPartial.ToString() + "</div>" +
+                                      $"<div  id='div-{controller}-{action}-sh' style='display:none'>" + StringPartial.ToString() + "</div>" +
+                                      "<script>" + js + "</script>");
+            }
+
+        }
+    }
+}
+==============================================index view ========================================
+
+@using Helper.Extensions
+
+<link href="~/css/main.css" rel="stylesheet" />
+<br />
+<div class="row" style="margin:10px">
+    <div class="col-md-6">
+        @Html.AsyncPartial("home", "getdata")
+    </div>
+    <div class="col-md-6">
+        -
+    </div>
+</div>
+
+<div class="row" style="margin:10px">
+    <div class="col-md-6">
+        @Html.AsyncPartialAutoRefresh("home", "getdata2",15, "GetData_preview")
+    </div>
+    <div class="col-md-6">
+        -
+    </div>
+</div>
+
+<script>@Html.Raw(TempData["script"])</script>
+
+
+==================================partial temp view================================
+
+
+
+
+<div class="panel panel-primary" style="width:100%"> 
+    <div class="panel-heading"> 
+        <h3 class="panel-title">World Population TEST TEST</h3>
+    </div> 
+    <div class="panel-body"> 
+        <div id="floatingCirclesG">
+            <div class="f_circleG" id="frotateG_01"></div>
+            <div class="f_circleG" id="frotateG_02"></div>
+            <div class="f_circleG" id="frotateG_03"></div>
+            <div class="f_circleG" id="frotateG_04"></div>
+            <div class="f_circleG" id="frotateG_05"></div>
+            <div class="f_circleG" id="frotateG_06"></div>
+            <div class="f_circleG" id="frotateG_07"></div>
+            <div class="f_circleG" id="frotateG_08"></div>
+        </div>
+
+
+
+
+     </div> 
+</div>
+
+
+
+===================================Prtial View===================================================
+@model MvcPartialAsync.Models.PopulationModel
+<div class="panel panel-primary" style="width:100%">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-11"><h3 class="panel-title">World Population </h3></div>
+            <div class="col-sm-1">
+                <a DATA-partial-refresh href="#"><span style="color:white" class="glyphicon glyphicon-refresh"></span></a>
+            </div>
+        </div>
+        
+      
+    </div>
+    <div class="panel-body">
+        <table style="width:100%" class="table table-striped">
+            <thead>
+            <th>Region</th>
+            <th style="text-align:right">Population</th>
+            <th style="text-align:right">Area Km²</th>
+            </thead>
+            @foreach (var item in Model.regions)
+            {
+                <tr>
+                    <td>@item.RegionName</td>
+                    <td style="text-align :right">@item.Population.ToString("N").Split(',')[0]</td>
+                <td style="text-align :right">@item.Area.ToString("N").Split(',')[0]</td>
+
+            </tr>
+            }
+        </table>
+    </div>
+</div>
+
+====================================Controller================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace MvcPartialAsync.Controllers
+{
+    public class HomeController : Controller
+    {
+        public ActionResult Index()
+        {
+            return View();
+        }
+      
+        public ActionResult GetData()
+        {
+            System.Threading.Thread.Sleep(3000);
+            Models.PopulationModel model = new Models.PopulationModel();
+            model.regions = new List<Models.Region>() {
+                new Models.Region () {
+                    RegionName = "Europe",
+                     Population =739207742,
+                     Area =22131968
+                },
+                 new Models.Region () {
+                    RegionName = "Asia",
+                     Population =4478315164,
+                     Area =31034755
+                },
+                  new Models.Region () {
+                    RegionName = "North America",
+                     Population =363224006,
+                     Area =18626872
+                },
+                   new Models.Region () {
+                    RegionName = "Latin America",
+                     Population =647565336,
+                     Area =20110725
+                },
+                   new Models.Region () {
+                    RegionName = "Oceania",
+                     Population =40467040,
+                     Area =8430633
+                },
+                    new Models.Region () {
+                    RegionName = "Africa"+DateTime.Now.ToString(),
+                     Population =1246504865,
+                     Area =29678687
+                }
+            };
+            return View(model);
+        }
+
+        public ActionResult GetData2()
+        {
+            System.Threading.Thread.Sleep(5000);
+            Models.PopulationModel model = new Models.PopulationModel();
+            model.regions = new List<Models.Region>() {
+                new Models.Region () {
+                    RegionName = "Europe",
+                     Population =739207742,
+                     Area =22131968
+                },
+                 new Models.Region () {
+                    RegionName = "Asia",
+                     Population =4478315164,
+                     Area =31034755
+                },
+                  new Models.Region () {
+                    RegionName = "North America",
+                     Population =363224006,
+                     Area =18626872
+                },
+                   new Models.Region () {
+                    RegionName = "Latin America",
+                     Population =647565336,
+                     Area =20110725
+                },
+                   new Models.Region () {
+                    RegionName = "Oceania",
+                     Population =40467040,
+                     Area =8430633
+                },
+                    new Models.Region () {
+                    RegionName = "Africa"+DateTime.Now.ToString(),
+                     Population =1246504865,
+                     Area =29678687
+                }
+            };
+            return View("GetData",model);
+        }
+
+        public ActionResult Sections()
+        {
+           
+            return View();
+        }
+    }
+}
+
+
